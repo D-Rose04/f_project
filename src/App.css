@@ -1,38 +1,85 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+.menu{
+  background-color: #7710ee;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  color: #fff;
+  padding: 10px 0;
+}
+
+.menu-item{
+  text-align: start;
+  padding: 2px 15px;
+  margin: 2px 10px;
+  box-shadow: inset 0 0 0 0 #7710ee;
+  color: #7710ee;
+  border: solid 0 rgb(179, 165, 165);
+  transition: color .3s ease-in-out, box-shadow .3s ease-in-out, border .3s ease-in-out;
+  border-radius: 5px ;
+  text-decoration: none;
+  width: 95%;
+  height: 95%;
+}
+
+.menu-item *{
+  margin: 0;
+  padding:  0;
+}
+
+.menu-item p{
+  margin: 0;
+  padding: 5px 0;
+}
+.menu-item:hover {
+  box-shadow: inset 160px 0 55px 0 #7710ee;
   color: white;
+  border: solid 1px rgb(179, 165, 165);
 }
 
-.App-link {
-  color: #61dafb;
+.menu-items-container{
+  min-height: 90%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.menu-icon  {
+  padding: 0 0 0 20px;
+}
+
+.menu-icon button{
+  margin: 0px 0 0 0;
+  background-color: transparent;
+  outline: none;
+  border: none;
+  color: white;
+  padding: 5px;
+}
+
+.logo{
+  margin: 50px 0 0 10px !important;
+}
+
+main{
+  min-height: 95vh;
+}
+
+.userinfo{
+  text-align: center;
+  display: flex;
+  align-items: center;
+}
+
+.userinfo p{
+  margin: auto 0;
+}
+.menu-container{
+  display: flex;
+  justify-content: space-between;
+  /* background-color: red; */
+  width: 98%;
+}
+
+.btn-signup{
+  background-color: #06b114 !important;
+}
+
+
+.btn-login{
+  background-color: #14b3be !important;
 }
