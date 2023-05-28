@@ -32,11 +32,11 @@ export default function Login () {
         navigate("/");
     }
 
-    return (
-        <Container className='d-flex  align-items-center justify-content-center mt-5'>
-            <Row className='d-flex loginContainer align-self-center'>
-                <Col>
-                    <Card>
+    return (    
+        <Container className='d-flex  align-items-center justify-content-center mt-4'>
+            <Row className='d-flex loginContainer align-self-center w-50'>
+                <Col className='d-flex justify-content-center'>
+                    <Card className='w-75'>
                         <Card.Title className='text-center mb-3  mt-5'>
                             <h3>Inicia Sesión</h3>
                         </Card.Title>
