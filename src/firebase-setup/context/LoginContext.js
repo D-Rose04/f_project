@@ -10,7 +10,7 @@ import {
     signInWithPopup
 } from 'firebase/auth';
 
-export const context = React.createContext();
+export const loginContext = React.createContext();
 
 export function LoginProvider ( { children } ) {
     const [currUser, setCurrUser] = useState();
@@ -54,8 +54,8 @@ export function LoginProvider ( { children } ) {
     };
 
     return (
-        <context.Provider value={value}>
+        <loginContext.Provider value={value}>
             {children}
-        </context.Provider>
+        </loginContext.Provider>
     )
 }

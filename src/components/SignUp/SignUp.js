@@ -62,8 +62,8 @@ export default function SignUp () {
                 userInfo.EmailAddress,
                 userInfo.Password
             )
-                .then( () => updateUserName( `${userInfo.Name}` ) )
-                .then( () => navigate( "/" ) );
+                .then( () => updateUserName( `${userInfo.Name} ${userInfo.LastName}` ) )
+            navigate( "/" )
         }
         catch ( e ) {
             alert( e );

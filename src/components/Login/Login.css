@@ -1,0 +1,46 @@
+.register-container{
+    background: var(--secondary) !important;
+    min-height: 60vh;
+}
+
+.image-container{
+    border-radius: 50%;
+    background-image: url("https://theperfectroundgolf.com/wp-content/uploads/2022/04/placeholder.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 220px;
+    height: 220px;
+}
+
+.right-side{
+    background: #F0F0F0 !important;
+}
+
+.main-text{
+    margin: 0 auto;
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.main-text{
+    margin: 15px 0 0 0;
+}
+
+.login-btn{
+    background: var(--highlight) !important;
+    color: var(--primary) !important;
+    border: var(--highlight) !important;
+}
+
+.google-login{
+    background-color: var(--primary) !important;
+
+}
+
+.google-logo{
+    color: #FFFFFF;
+}
+
+.lnk{
+    color: var(--primary);
+}
