@@ -1,0 +1,218 @@
+body::-webkit-scrollbar{
+    display: none;
+    -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+
+.mainContainer{
+
+}
+
+.firstContainer{
+    height: 100vh;
+    max-height: 1443px;
+    
+}
+
+.firstContainer .img{
+    max-height: 100%;
+    height: 100vh;
+    max-width: 100%;
+    width: auto;
+    background-image: url('./que-comen-los-perros.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    overflow: hidden;
+}
+
+.wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    transform: rotate(180deg);
+}
+
+.wave svg {
+    position: relative;
+    display: block;
+    width: calc(144% + 1.3px);
+    height: 401px;
+}
+
+.wave .shape-fill {
+    fill: #FFFFFF;
+}
+
+.btnCuenta{
+    border: 2px solid rgb(255, 255, 255) !important;
+    border-radius: 0px !important;
+    color: rgb(255, 255, 255) !important;
+
+}
+
+.happyFeetsNav{
+    color: rgb(255, 255, 255);
+    font-weight: 600;
+    font-size: large;
+    text-decoration: none;
+
+}
+
+.iniciarSesionText{
+    font-size: large !important;
+    color: rgb(255, 255, 255) !important;
+    text-decoration: none;
+
+}
+
+.happyFeetsWelcome{
+    color: #EBC7E6;
+    font-weight: 600;
+}
+
+.secondContainer{
+    height: 100vh;
+
+}
+
+.happyFeetsMeaning{
+    font-size: 2.5rem;
+    font-weight: 900;
+}
+
+.happyFeetsMeaning > span{
+    color: #645CBB;
+}
+
+.secondContainerGrid{
+    display: grid;
+    grid-template-columns: 50% auto;
+    column-gap: 5%;
+    margin: 0px 10vw !important;
+    height: 40vh !important;
+}
+
+.bgCard{
+    background-color: #EBC7E6 !important;
+    width: 60% !important;
+    height: 35vh !important;
+    margin-left: 35%;
+}
+
+.bgCard > img{
+    object-fit: contain;
+    width: 65%;
+    height: 65%;
+}
+
+.bgCard > p{
+    color: #645CBB;
+    font-size: x-large;
+    font-weight: 700;
+}
+
+.secondContainerText{
+    margin-right: 10vw;
+    font-size: large;
+    line-height: 1.8;
+}
+
+.thirdContainer{
+    height: 100vh;
+}
+
+.thirdContainerTitle{
+    font-size: 2.5rem;
+    color: #EBC7E6;
+}
+
+.thirdContainerGrid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 5%;
+}
+
+.thirdContainerCard{
+    background-color: transparent !important;
+    border-color: rgb(255, 255, 255) !important;
+}
+
+.iconCard{
+    /* margin-top: 2vh; */
+    width: 30px;
+    height: 30px;
+    color: rgb(255, 255, 255);
+}
+
+.thirdContainerCard > .card-body > .card-title{
+    color: rgb(255, 255, 255);
+    text-align: center;
+    font-size: x-large;
+    font-weight: 800;
+}
+
+.cardText{
+    color: rgb(255, 255, 255);
+    font-size: medium !important;
+    line-height: 1.8 !important;
+    font-weight: lighter !important;
+    margin: 0vh 2vw !important;
+}
+
+.fourthContainer{
+    height: 100vh;
+    background-color: #EBC7E6;
+}
+
+.fourthContainerTitle{
+    font-size: 2.5rem;
+    color: rgb(255, 255, 255);
+}
+
+.fourthContainerGrid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 5%;
+}
+
+.fourthContainerCard{
+    background-color: transparent !important;
+    border-color: rgb(255, 255, 255) !important;
+}
+
+.fourthContainerCard > .card-body > .card-title{
+    color: rgb(255, 255, 255);
+    text-align: center;
+    font-size: x-large;
+    font-weight: 800;
+}
+
+.fourthContainerImgCard{
+    height: 35vh !important;
+    max-height: 35vh !important;
+    width: 100% !important;
+    max-width: 100% !important;
+
+}
+
+.lastContainer{
+    height: 25vh;
+}
+
+.lastContainerGrid{
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    column-gap: 20%;
+}
+
+.lastContainerGridInfo{
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+}
+
+.lastContainerGridForm{
+    grid-column: 2;
+}

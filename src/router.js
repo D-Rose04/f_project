@@ -5,6 +5,7 @@ import Social from "./pages/Social/Social";
 import Profile from "./pages/Profile/Profile";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
+import Landing from "./pages/Landing/Landing";
 
 const router = createBrowserRouter([
     {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
                 element: <Profile />
             }
         ],
+    },
+    {
+        path: "/landing",
+        element: <Landing />
     },
     {
         path: "/login",
