@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './Landing.css'
 import {FaPaintBrush} from 'react-icons/fa'
 import {FaCode} from 'react-icons/fa'
@@ -9,8 +9,17 @@ function Landing() {
     const miguelPhoto = require('./funny-cat.png');
     const pabloPhoto = require('./funny-bull-terrier.jpg');
     const juanPhoto = require('./juan-horse.png');
+
+    const [email, setEmail] = useState();
+
+    const formHandler = (e) => {
+        e.preventDefault();
+        setEmail(e.target);
+        //  FUNCION QUE NOS MANDE AL CORREO DEL PROYECTO LAS SUGERENCIAS
+    }
+
   return (
-    <div className="d-flex flex-column bg-white mainContainer">
+    <div className="d-flex flex-column bg-white">
         <div className="firstContainer mb-5">
             <div className="img">
                 <div className="d-flex flex-row justify-content-between mt-4 mx-5">
@@ -18,9 +27,9 @@ function Landing() {
                     <a href='login' className='iniciarSesionText'>Iniciar Sesión</a>
                 </div>
                 <div className='d-flex flex-column align-items-center justify-content-center mt-5'>
-                    <h3 className='happyFeetsWelcome'>Bienvenidos a Happy Feets</h3>
+                    <h3 className='happyFeetsWelcome'>Bienvenidos a <span>Happy Feets</span></h3>
                     <p className='mt-3'>¿Cuál es la mejor mascota para usted? ¡Descúbrelo ahora!</p>
-                    <a href='/register' className='btn btnCuenta'>Crear Cuenta</a>
+                    <a href='/register' className='btn btn-outline-dark btnCuenta'>Crear Cuenta</a>
                 </div>
                 <div className="wave">
                     <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
@@ -47,6 +56,7 @@ function Landing() {
                     </div>
                 </div>
             </div>
+            
         </div>
         <div className="bg-indigo thirdContainer">
             <div className='d-flex flex-row justify-content-center mt-5 mb-5'>
@@ -58,7 +68,7 @@ function Landing() {
                         <FaPaintBrush className='iconCard mt-3' />
                         <div className='card-body'>
                             <div className='card-title'>Diseño atractivo</div>
-                            <p className='cardText'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque porta massa sit amet fermentum dignissim. Vivamus finibus euismod nisl, eget facilisis neque pretium porta.</p>
+                            <p className='cardText text-center'>Gracias a nuestro diseño atractivo, resulta muy fácil de usar y de guiarse por las distintas funcionalidades y aspectos para no perderse y entender en su totalidad todo lo que les ofrecemos.</p>
                         </div>
                     </div>
                     <div className='card thirdContainerCard d-flex flex-column align-items-center'>
@@ -66,18 +76,19 @@ function Landing() {
 
                         <div className='card-body'>
                             <div className='card-title'>Codigo seguro</div>
-                            <p className='cardText'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque porta massa sit amet fermentum dignissim. Vivamus finibus euismod nisl, eget facilisis neque pretium porta. </p>
+                            <p className='cardText text-center'>Esta plataforma está construida bajo una arquitectura que les brinda a nuestros usuarios los ultimos estandares de seguridad para evitar perder información valiosa. </p>
                         </div>
                     </div>
                     <div className='card thirdContainerCard d-flex flex-column align-items-center'>
                         <FaToggleOn className='iconCard mt-3' />
                         <div className='card-body'>
                             <div className='card-title'>Nuevos rasgos</div>
-                            <p className='cardText'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque porta massa sit amet fermentum dignissim. Vivamus finibus euismod nisl, eget facilisis neque pretium porta. </p>
+                            <p className='cardText text-center'>Nuestra plataforma cuenta con novedosas funcionalidades para facilitar la interacción entre los que quieren adoptar y los que tengan animales para que sean adoptados, como lo es nuestro chat entre usuarios.</p>
                         </div>
                     </div>
                 </div>
             </div>
+            
         </div>
         <div className="fourthContainer">
             <div className='d-flex flex-row justify-content-center mt-5 mb-5'>
@@ -115,14 +126,24 @@ function Landing() {
         </div>
         <div className='lastContainer bg-indigo'>
             <div className='lastContainerGrid mx-5'>
-                <div className='lastContainerGridInfo'>
+                <div className='lastContainerGridInfo mt-1'>
 
-                        <h6>Happy Feets</h6>
-                        <p>&#169; Happy Feets all rights reserved</p>
+                        <h6 className='mt-5 fs-3 text-white mb-5'>Happy Feets</h6>
+                        <p className='text-white mt-5'>&#169; Happy Feets all rights reserved</p>
                 </div>
                
                
-               <div className='lastContainerGridForm'>Nuestro espacio</div>
+               <div className='lastContainerGridForm'>
+                <h6 className='fs-3 text-white mt-5 mb-3'>Nuestro espacio</h6>
+                <div className='divider'></div>
+                <p className='text-white mt-2'>Envía tus sugerencias!</p>
+                <form className='row'>
+                        <input type='email' id="" className='form-control col mx-2 formRadius' placeholder='Correo'></input>
+                        <textarea type='text' id="" className='form-control col mx-2 formRadius' placeholder='Mensaje'></textarea>
+                        <button className='col mx-2 formRadius btn btn-thistle' >Enviar</button>
+                    </form>
+                    
+                </div>
             </div>
 
         </div>
