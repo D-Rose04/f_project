@@ -1,17 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import router from './router';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { LoginProvider } from './firebase-setup/context/LoginContext';
+import './styles/style.css';
+import { RouterProvider } from 'react-router-dom';
 
-const root = ReactDOM.createRoot( document.getElementById( 'root' ) );
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <LoginProvider>
-      <App />
-    </LoginProvider>
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
 
