@@ -9,7 +9,7 @@ function CommentList({ postId, comments }) {
         <Accordion className="comments-list">
             <CommentButton eventKey={postId} />
             <Accordion.Collapse eventKey={postId}>
-                <div class="comments-body">
+                <div className="comments-body">
                     {comments.map(c=><CommentItem key={c.id} comment={c} />)}
                 </div>
             </Accordion.Collapse>

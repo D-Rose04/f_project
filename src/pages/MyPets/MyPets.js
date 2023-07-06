@@ -1,10 +1,14 @@
-import React, { useEffect } from 'react'
-import { useOutletContext } from 'react-router-dom'
-import './Adopt.css'
+import React, { useEffect, useState } from 'react'
+import { Outlet, useNavigate, useOutletContext } from 'react-router-dom'
+import './MyPets.css'
 import PetCard from '../../components/app/PetCard/PetCard'
 import Example from '../../components/app/PetCard/Example'
+import { Button, Modal } from 'react-bootstrap'
 
-function Adopt() {
+function MyPets() {
+  const navigate= useNavigate()
+  const handleShow=()=>navigate('add-pet')
+
   const petList = [
     {
       id: 1,
@@ -58,13 +62,16 @@ function Adopt() {
   ]
   const [setTitle, setSidebar] = useOutletContext()
   useEffect(() => {
-    setTitle("Adoptar")
+    setTitle("Mis mascotas")
+    setSidebar(<Button variant='primary' onClick={handleShow}>Agregar</Button>)
   }, [])
+
   return (
     <div className="row row-cols-2 row-cols-lg-3 row-cols-xl-4 g-2 py-1">
       {petList.map(p => <PetCard key={p.id} name={p.name} image={p.image} age={p.age} race={p.race} location={p.location} />)}
+      <Outlet />
     </div>
   )
 }
 
-export default Adopt
+export default MyPets

@@ -3,7 +3,7 @@ import { useOutletContext } from 'react-router-dom'
 import Post from '../../components/app/Post/Post'
 
 function Social() {
-  const [, setTitle] = useOutletContext()
+  const [setTitle, setSidebar]=useOutletContext()
 
   const postsExample = [
     {
