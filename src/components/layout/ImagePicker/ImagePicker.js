@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-export default function ImagePicker({ className, name, controlId }) {
+export default function ImagePicker({ className, title, name, controlId }) {
     const imgInputRef = useRef(null)
     const [image, setImage] = useState(null);
     const [imageURL, setImageURL] = useState(null);
@@ -25,7 +25,7 @@ export default function ImagePicker({ className, name, controlId }) {
         <div className={'d-flex flex-column align-items-center ' + className}>
             <img className='img-fluid' width={300} src={imageURL ?? require('../../../img/dog-white.png')} onClick={() => imgInputRef.current.click()} />
             <input className='d-none' ref={imgInputRef} type='file' name={name} id={controlId} accept="image/*" onChange={onImageChange} />
-            {imageURL ? <button className='btn btn-primary mt-2' onClick={deleteImage}>Borrar Imagen</button> : <h6 className='text-white'>Seleccionar Imagen</h6>}
+            {imageURL ? <button className='btn btn-primary mt-2' onClick={deleteImage}>Borrar Imagen</button> : <h6 className='text-white'>{title}</h6>}
         </div>
     );
 }

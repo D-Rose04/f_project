@@ -7,7 +7,6 @@ import { Button, Modal } from 'react-bootstrap'
 
 function MyPets() {
   const navigate= useNavigate()
-  const handleShow=()=>navigate('add-pet')
 
   const petList = [
     {
@@ -63,7 +62,7 @@ function MyPets() {
   const [setTitle, setSidebar] = useOutletContext()
   useEffect(() => {
     setTitle("Mis mascotas")
-    setSidebar(<Button variant='primary' onClick={handleShow}>Agregar</Button>)
+    setSidebar(<Button variant='primary' onClick={()=>navigate('add-pet')}>Agregar</Button>)
   }, [])
 
   return (

@@ -11,6 +11,8 @@ import MyPets from "./pages/MyPets/MyPets";
 import AddPet from "./pages/MyPets/AddPet/AddPet";
 import LostPets from "./pages/LostPets/LostPets";
 import AddLostPet from "./pages/LostPets/AddLostPet/AddLostPet";
+import LostPetDetails from "./pages/LostPets/LostPetDetails/LostPetDetails";
+import LostPetFound from "./pages/LostPets/LostPetFound/LostPetFound";
 
 const router = createBrowserRouter([
     {
@@ -29,7 +31,7 @@ const router = createBrowserRouter([
                     {
                         path: "add-pet",
                         element: <AddPet />
-                    },
+                    }
                 ],
             },
             {
@@ -39,7 +41,17 @@ const router = createBrowserRouter([
                     {
                         path: "add-pet",
                         element: <AddLostPet />
-                    },
+                    }
+                ]
+            },
+            {
+                path: '/lost-pets/:petId',
+                element: <LostPetDetails />,
+                children: [
+                    {
+                        path:'found',
+                        element: <LostPetFound />
+                    }
                 ]
             },
             {

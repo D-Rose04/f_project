@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { usePopper } from 'react-popper';
 
-function PetCard({ image, name, race, age, location, vacuna = false }) {
+function PetCard({ id, image, name, race, age, location, vacuna = false }) {
     const [favorite, setFavorite] = useState(false)
     const favImage = require(favorite ? "./../../../img/icons/heart-fill.png" : "./../../../img/icons/heart-empty.png");
 
@@ -15,15 +15,19 @@ function PetCard({ image, name, race, age, location, vacuna = false }) {
         case 'y': time += cant > 1 ? ' años' : ' año'; break;
     }
 
+    useEffect(()=>{
+console.log(id)
+    },[])
+
     return (
         <div className="col">
             <Card>
-                <Link to={'#'}><Card.Img variant="top" src={image} /></Link>
+                <Link to={''+id}><Card.Img variant="top" src={image} /></Link>
 
 
                 <Card.Body>
                     <div className='d-flex justify-content-between'>
-                        <Link to={'#'}><Card.Title>{name}</Card.Title></Link>
+                        <Link to={''+id}><Card.Title>{name}</Card.Title></Link>
                         <a href="#" className='align-self-end'>
                             <img width="28" src={favImage} alt=""
                                 className="img-fluid" onClick={() => setFavorite(!favorite)} />
@@ -39,7 +43,7 @@ function PetCard({ image, name, race, age, location, vacuna = false }) {
                 <Card.Footer className='d-flex justify-content-between'>
                     <span className='text-dark'>{location}</span>
                     <a href='#'><img src={require('../../../img/icons/more.png')} className='img-fluid' width={15} /></a>
-                    </Card.Footer>
+                </Card.Footer>
             </Card>
 
         </div>

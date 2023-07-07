@@ -21,7 +21,7 @@ function AddLostPet() {
             </Modal.Header>
             <Modal.Body className='bg-indigo px-5'>
                 <form>
-                    <ImagePicker className="mb-3" name="image" controlId={"imgPickInput"} />
+                    <ImagePicker className="mb-3" title="Seleccionar Imagen" name="image" controlId={"imgPickInput"} />
                     <div className="mb-3">
                         <input type="text" className="form-control" style={styles.customInput} placeholder='Nombre' />
                     </div>

@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './Register.styles'
 import './Register.css'
+import ReactInputMask from 'react-input-mask'
 
 function Register() {
     return (
@@ -12,6 +13,9 @@ function Register() {
                         <img className="img-fluid rounded-circle" src="https://images.placeholders.dev/?width=50&height=50" alt="" />
                     </div>
                     <input className="form-control py-2 px-4 rounded mt-5" style={styles.loginInput} type="email" name="email" id="txtEmail" placeholder="Email" />
+                    <ReactInputMask mask="(999) 999-9999">
+                        {inputProps=><input {...inputProps} className="form-control py-2 px-4 rounded mt-3" style={styles.loginInput} type="text" name="phone" id="txtPhone" placeholder="Telefono" />}
+                    </ReactInputMask>
                     <input className="form-control py-2 px-4 rounded mt-3" style={styles.loginInput} type="text" name="user" id="txtUser" placeholder="Usuario" />
                     <input className="form-control py-2 px-4 rounded mt-3" style={styles.loginInput} type="password" name="password" id="txtPass" placeholder="Contraseña" />
                     <button className="btn btn-thistle w-100 mt-5" type="button">Iniciar Sesion</button>

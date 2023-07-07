@@ -66,7 +66,7 @@ function LostPets() {
   
     return (
       <div className="row row-cols-2 row-cols-lg-3 row-cols-xl-4 g-2 py-1">
-        {petList.map(p => <PetCard key={p.id} name={p.name} image={p.image} age={p.age} race={p.race} location={p.location} />)}
+        {petList.map(p => <PetCard key={p.id} id={p.id} name={p.name} image={p.image} age={p.age} race={p.race} location={p.location} />)}
         <Outlet />
       </div>
     )

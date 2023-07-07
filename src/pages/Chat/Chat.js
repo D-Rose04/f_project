@@ -1,12 +1,16 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useOutletContext } from 'react-router-dom'
 
 import './Chat.css';
 import ChatInput from '../../components/app/Chat/ChatInput';
 
 function Chat() {
-    const [setTitle, setSidebar] = useOutletContext()
-    useEffect(() => setTitle("Chat"), [])
+    const [setTitle, setSidebar, chatRef] = useOutletContext()
+    useEffect(() => {
+        setTitle("Chat")
+        const chatContainer = chatRef.current;
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }, [])
     return (
         <div className="chat-layout row pb-5">
             <div className="message d-flex ps-2 mt-2">
