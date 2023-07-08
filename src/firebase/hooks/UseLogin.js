@@ -1,6 +1,6 @@
-import { context } from "../context/LoginContext";
 import { useContext } from "react";
+import { loginContext } from "../context/LoginContext";
 
 export function UseLoginContext(){
-    return useContext(context);
+    return useContext(loginContext);
 }

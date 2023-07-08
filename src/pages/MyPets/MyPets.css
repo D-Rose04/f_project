@@ -1,0 +1,17 @@
+.filter-group{
+    margin-top: 10px;
+}
+
+.filter-group *{
+    color: black;
+}
+
+.filter-group h5{
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 2px;
+}
+
+.card-body .card-title, .card-text{
+    color: black;
+}

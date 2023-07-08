@@ -124,7 +124,7 @@ function Landing() {
                 </div>
             </div>
         </div>
-        <div className='lastContainer bg-indigo'>
+        <div className='lastContainer bg-indigo' style={{minHeight: '40vh'}}>
             <div className='lastContainerGrid mx-5'>
                 <div className='lastContainerGridInfo mt-1'>
 

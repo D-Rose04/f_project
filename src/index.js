@@ -1,15 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
-import router from './router';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import './styles/style.css';
-import { RouterProvider } from 'react-router-dom';
+import App from './App';
+import { LoginProvider } from './firebase/context/LoginContext';
+import { LoadingProvider } from './firebase/context/LoadingContext';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot( document.getElementById( 'root' ) );
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <LoadingProvider>
+      <LoginProvider>
+        <App />
+      </LoginProvider>
+    </LoadingProvider>
   </React.StrictMode>
 );
 
