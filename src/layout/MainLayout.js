@@ -1,4 +1,4 @@
-import React, { Children, useState } from 'react'
+import React, { Children, useEffect, useState } from 'react'
 import Logo from '../components/layout/Logo/Logo'
 import NavigationLink from '../components/layout/NavigationLink/NavigationLink'
 import NotificationButton from '../components/layout/NotificationButton/NotificationButton'
@@ -6,10 +6,12 @@ import { Outlet } from 'react-router-dom'
 import ProfilePicture from '../components/layout/ProfilePicture/ProfilePicture'
 
 function MainLayout({children}) {
-  const [title, setTitle] = useState("Titulo")
-
+  const [title, setTitle] = useState("Titulo");
+  useEffect(()=> {
+    
+  },[]);
   return (
-    <div className="container-fluid h-100">
+    <div className="container-fluid h-100 bg-indigo">
       <div className="row h-100">
         <div className="col-4 col-sm-3 col-lg-2 d-flex flex-column align-items-center p-2 side-bar">
 

@@ -115,3 +115,12 @@ main{
   margin: 0 1px -35px 0 !important;
   filter: brightness(0) invert(1);
 }
+
+.loader{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-thistle-l);
+}

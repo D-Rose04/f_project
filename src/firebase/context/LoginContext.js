@@ -17,23 +17,23 @@ export function LoginProvider ( { children } ) {
     const provider = new GoogleAuthProvider();
     const [logged, setLogged] = useState( false );
 
-    function SignUp ( email, pwd ) {
+    async function SignUp ( email, pwd ) {
         return createUserWithEmailAndPassword( auth, email, pwd );
     }
 
-    function SignIn ( email, pwd ) {
+    async function SignIn ( email, pwd ) {
         return signInWithEmailAndPassword( auth, email, pwd );
     }
 
-    function SignInWithGoogle () {
+    async function SignInWithGoogle () {
         return signInWithPopup( auth, provider );
     }
 
-    function updateUserName ( userName ) {
+    async function updateUserName ( userName ) {
         updateProfile( auth.currentUser, { displayName: userName } );
     }
 
-    function SignOut () {
+    async function SignOut () {
         signOut( auth );
     }
 
@@ -42,7 +42,7 @@ export function LoginProvider ( { children } ) {
         return unsubscribe;
     }, [] );
 
-    const value = {
+    const LOGIN = {
         currUser,
         SignUp,
         SignIn,
@@ -54,7 +54,7 @@ export function LoginProvider ( { children } ) {
     };
 
     return (
-        <loginContext.Provider value={value}>
+        <loginContext.Provider value={LOGIN}>
             {children}
         </loginContext.Provider>
     )
