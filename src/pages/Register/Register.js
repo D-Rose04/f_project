@@ -4,24 +4,23 @@ import './Register.css'
 import ReactInputMask from 'react-input-mask'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { useContext } from 'react'
-import { context } from '../../firebase/context/LoginContext'
 import ImagePicker from '../../components/layout/ImagePicker/ImagePicker'
 import { useNavigate } from 'react-router-dom'
 import { uploadProfilePicture } from '../../firebase/context/StorageContext'
 import { addUser } from '../../firebase/context/DatabaseContext'
+import { UseLoginContext } from '../../firebase/hooks/UseLogin'
 
 function Register() {
-    const [name, setName] = useState(null)
-    const [lastName, setLastName] = useState(null)
-    const [phone, setPhone] = useState(null)
-    const [email, setEmail] = useState(null)
-    const [password, setPassword] = useState(null)
-    const [image, setImage] = useState(null)
+    const [name, setName] = useState("")
+    const [lastName, setLastName] = useState("")
+    const [phone, setPhone] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
+    const [image, setImage] = useState("")
     const [completeFields, setCompleteFields] = useState(false)
     const [isLoading, setLoading] = useState(false);
 
-    const authContext = useContext(context)
+    const authContext = UseLoginContext();
     const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
@@ -46,15 +45,6 @@ function Register() {
 
         setLoading(false)
         navigate('/')
-    }
-
-    const register = () => {
-        try {
-
-            // const result = authContext.SignIn(email, password)
-        } catch (error) {
-
-        }
     }
 
     const googleRegister = () => {
@@ -113,8 +103,8 @@ function Register() {
                         </ReactInputMask>
                         {/* <input className="form-control py-2 px-4 rounded mt-3" style={styles.loginInput} type="text" name="user" id="txtUser" placeholder="Usuario" /> */}
 
-                        <button className="btn btn-primary w-100 mt-4" type="submit" onClick={!isLoading ? register : null} disabled={isLoading}>{isLoading ? 'Registrando...' : 'Registrarse'}</button>
-                        <button className="btn btn-primary w-100 mt-2" type="button" onClick={register}>Registrarse con Google</button>
+                        <button className="btn btn-primary w-100 mt-4" type="submit" disabled={isLoading}>{isLoading ? 'Registrando...' : 'Registrarse'}</button>
+                        <button className="btn btn-primary w-100 mt-2" type="button" onClick={googleRegister}>Registrarse con Google</button>
                         <button className="btn btn-thistle w-100 mt-2" type="button" onClick={() => navigate('/login')}>Iniciar Sesion</button>
                         {completeFields && <h6 className='text-danger mt-2'>Rellena todos los campos</h6>}
                     </div>

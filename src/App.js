@@ -1,5 +1,5 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { UseLoginContext } from './firebase/hooks/UseLogin'
 import MainLayout from "./layout/MainLayout";
@@ -11,7 +11,6 @@ import Register from "./pages/Register/Register";
 import Landing from "./pages/Landing/Landing";
 import { BounceLoader } from 'react-spinners';
 import { UseLoadingContext } from './firebase/hooks/UseLoading';
-import { auto } from '@popperjs/core';
 
 export default function App () {
   const { currUser } = UseLoginContext();
