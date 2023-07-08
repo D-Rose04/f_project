@@ -17,8 +17,8 @@ export function LoginProvider ( { children } ) {
     const provider = new GoogleAuthProvider();
     const [logged, setLogged] = useState( false );
 
-    function SignUp ( email, pwd ) {
-        return createUserWithEmailAndPassword( auth, email, pwd );
+    async function SignUp ( email, pwd ) {
+        return await createUserWithEmailAndPassword( auth, email, pwd );
     }
 
     function SignIn ( email, pwd ) {

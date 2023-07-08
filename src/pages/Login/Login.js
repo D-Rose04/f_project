@@ -1,7 +1,12 @@
 import React from 'react'
 import './Login.css'
+import { auth } from '../../firebase/config/config-firebase'
+import { FirebaseAuth } from 'react-firebaseui'
+
+const REDIRECT_PAGE = '/'
 
 function Login() {
+
   return (
     <div className='position-relative w-100 h-100 bg-white'>
       <div className="position-absolute top-50 start-50 translate-middle row">
@@ -15,6 +20,7 @@ function Login() {
           <input className="form-control login-input py-2 px-4 rounded mt-3" type="password" name="password" id="txtPass" placeholder="Contraseña" />
           <button className="btn btn-thistle w-100 mt-5" type="button">Iniciar Sesion</button>
           <button className="btn btn-primary w-100 mt-2" type="button">Registrarse</button>
+          
         </div>
       </div>
     </div>

@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Outlet, useNavigate, useOutletContext } from 'react-router-dom'
 import './MyPets.css'
 import PetCard from '../../components/app/PetCard/PetCard'
-import Example from '../../components/app/PetCard/Example'
-import { Button, Modal } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 
 function MyPets() {
   const navigate= useNavigate()

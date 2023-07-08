@@ -1,7 +1,6 @@
 import React from 'react'
 import Accordion from 'react-bootstrap/Accordion';
 import CommentButton from './CommentButton';
-import Comment from './Comment';
 import CommentItem from './CommentItem';
 
 function CommentList({ postId, comments }) {

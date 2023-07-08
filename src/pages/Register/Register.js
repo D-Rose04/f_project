@@ -2,35 +2,153 @@ import React from 'react'
 import styles from './Register.styles'
 import './Register.css'
 import ReactInputMask from 'react-input-mask'
+import { useState } from 'react'
+import { useEffect } from 'react'
+import { useContext } from 'react'
+import { context } from '../../firebase/context/LoginContext'
+import ImagePicker from '../../components/layout/ImagePicker/ImagePicker'
+import { useNavigate } from 'react-router-dom'
+import { uploadProfilePicture } from '../../firebase/context/StorageContext'
+import { addUser } from '../../firebase/context/DatabaseContext'
 
 function Register() {
+    const [name, setName] = useState(null)
+    const [lastName, setLastName] = useState(null)
+    const [phone, setPhone] = useState(null)
+    const [email, setEmail] = useState(null)
+    const [password, setPassword] = useState(null)
+    const [image, setImage] = useState(null)
+    const [completeFields, setCompleteFields] = useState(false)
+    const [isLoading, setLoading] = useState(false);
+
+    const authContext = useContext(context)
+    const navigate = useNavigate()
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true)
+
+        if (!name || !lastName || !phone || !email || !password || !image) {
+            setCompleteFields(true)
+            return
+        }
+
+        try {
+            const userData=await authContext.SignUp(email, password)
+            const uid = userData.user.uid
+            console.log(uid)
+            const bucket=await uploadProfilePicture(image, uid)
+            await addUser(uid, name, lastName, phone, bucket)
+            await authContext.SignOut()
+        } catch (error) {
+            console.error(error)
+        }
+
+        setLoading(false)
+        navigate('/')
+    }
+
+    const register = () => {
+        try {
+
+            // const result = authContext.SignIn(email, password)
+        } catch (error) {
+
+        }
+    }
+
+    const googleRegister = () => {
+
+    }
+
     return (
         <div className='h-100 bg-white'>
-            <div className="position-absolute top-50 start-50 translate-middle row">
-                <div className="col bg-gray rounded-start-3 p-5">
-                    <div className="d-flex justify-content-center align-items-center gap-3">
-                        <h3 className="fw-bold">Happy Feets</h3>
-                        <img className="img-fluid rounded-circle" src="https://images.placeholders.dev/?width=50&height=50" alt="" />
+            <form action='#' onSubmit={handleSubmit}>
+
+                <div className="position-absolute top-50 start-50 translate-middle row">
+
+                    <div className="col bg-gray rounded-start-3 p-5">
+                        <div className="d-flex justify-content-center align-items-center gap-3">
+                            <h3 className="fw-bold">Happy Feets</h3>
+                            <img className="img-fluid rounded-circle" width={50} src={require("../../img/logo.png")} alt="" />
+                        </div>
+                        <input
+                            className="form-control py-2 px-4 rounded mt-3"
+                            style={styles.loginInput}
+                            type="text"
+                            name="name"
+                            id="txtName"
+                            placeholder="Nombre"
+                            required
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
+
+                        <input
+                            className="form-control py-2 px-4 rounded mt-3"
+                            style={styles.loginInput}
+                            type="text"
+                            name="lastname"
+                            id="txtApe"
+                            placeholder="Apellido"
+                            required
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                        />
+
+                        <ReactInputMask mask="(999) 999-9999">
+                            {(inputProps) => (
+                                <input
+                                    {...inputProps}
+                                    className="form-control py-2 px-4 rounded mt-3"
+                                    style={styles.loginInput}
+                                    type="text"
+                                    name="phone"
+                                    id="txtPhone"
+                                    placeholder="Telefono"
+                                    required
+                                    onInput={(e) => setPhone(e.target.value)}
+                                />
+                            )}
+                        </ReactInputMask>
+                        {/* <input className="form-control py-2 px-4 rounded mt-3" style={styles.loginInput} type="text" name="user" id="txtUser" placeholder="Usuario" /> */}
+
+                        <button className="btn btn-primary w-100 mt-4" type="submit" onClick={!isLoading ? register : null} disabled={isLoading}>{isLoading ? 'Registrando...' : 'Registrarse'}</button>
+                        <button className="btn btn-primary w-100 mt-2" type="button" onClick={register}>Registrarse con Google</button>
+                        <button className="btn btn-thistle w-100 mt-2" type="button" onClick={() => navigate('/login')}>Iniciar Sesion</button>
+                        {completeFields && <h6 className='text-danger mt-2'>Rellena todos los campos</h6>}
                     </div>
-                    <input className="form-control py-2 px-4 rounded mt-5" style={styles.loginInput} type="email" name="email" id="txtEmail" placeholder="Email" />
-                    <ReactInputMask mask="(999) 999-9999">
-                        {inputProps=><input {...inputProps} className="form-control py-2 px-4 rounded mt-3" style={styles.loginInput} type="text" name="phone" id="txtPhone" placeholder="Telefono" />}
-                    </ReactInputMask>
-                    <input className="form-control py-2 px-4 rounded mt-3" style={styles.loginInput} type="text" name="user" id="txtUser" placeholder="Usuario" />
-                    <input className="form-control py-2 px-4 rounded mt-3" style={styles.loginInput} type="password" name="password" id="txtPass" placeholder="Contraseña" />
-                    <button className="btn btn-thistle w-100 mt-5" type="button">Iniciar Sesion</button>
-                    <button className="btn btn-primary w-100 mt-2" type="button">Registrarse</button>
-                </div>
-                <div className="col bg-indigo p-5 rounded-end-3">
-                    <img className="img-fluid rounded-2" src="https://images.placeholders.dev/?width=300&height=300" alt="" />
-                    {/* <h3 className="fw-bold text-white mt-2 text-center">Bienvenido a Happy Feets</h3> */}
+                    <div className="col bg-indigo p-5 rounded-end-3">
+                        <ImagePicker controlId="inputImg" width="300" name="image" title="Selecciona una imagen" onImageSet={(image) => setImage(image)} />
+                        {/* <h3 className="fw-bold text-white mt-2 text-center">Bienvenido a Happy Feets</h3> */}
 
-                    <button className="btn btn-primary w-100 mt-2" type="button">Subir Imagen</button>
-                    <input className="form-control py-2 px-4 rounded mt-2" style={styles.loginInput} type="text" name="name" id="txtName" placeholder="Nombre" />
-                    <input className="form-control py-2 px-4 rounded mt-2" style={styles.loginInput} type="text" name="lastname" id="txtApe" placeholder="Apellido" />
-                </div>
+                        <input
+                            className="form-control py-2 px-4 rounded mt-3"
+                            style={styles.loginInput}
+                            type="email"
+                            name="email"
+                            id="txtEmail"
+                            placeholder="Email"
+                            required
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
 
-            </div>
+                        <input
+                            className="form-control py-2 px-4 rounded mt-2"
+                            style={styles.loginInput}
+                            type="password"
+                            name="password"
+                            id="txtPass"
+                            placeholder="Contraseña"
+                            required
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+                </div>
+            </form>
+
         </div>
 
     )
