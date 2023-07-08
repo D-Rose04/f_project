@@ -11,7 +11,7 @@ function Post({ post }) {
     return (
         <div className="post bg-wisteria rounded mt-2 mb-4 p-2">
             <div className="d-flex align-items-center">
-                <a href="#">
+                <a href="/profile">
                     <img src={user.image}
                         className="rounded-circle img-fluid" />
                 </a>

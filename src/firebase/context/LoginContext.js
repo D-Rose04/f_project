@@ -18,7 +18,7 @@ export function LoginProvider ( { children } ) {
     const [logged, setLogged] = useState( false );
 
     async function SignUp ( email, pwd ) {
-        return createUserWithEmailAndPassword( auth, email, pwd );
+        return await createUserWithEmailAndPassword( auth, email, pwd );
     }
 
     async function SignIn ( email, pwd ) {
