@@ -29,7 +29,10 @@ function Login () {
           setLoading( false );
         }, 1500 );
       } )
-      .finally( () => navigate( "/" ) );
+      .finally( () => {
+        setLoading(false)
+        navigate( "/" ) 
+      });
   }
   return (
     <div className="position-absolute top-50 start-50 translate-middle row">

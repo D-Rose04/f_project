@@ -3,7 +3,7 @@ import { useOutletContext } from 'react-router-dom'
 import Post from '../../components/app/Post/Post'
 
 function Social() {
-  const [setTitle, ]=useOutletContext()
+  const [setTitle, setSidebar, setSidebarCols]=useOutletContext()
 
   const postsExample = [
     {
@@ -78,6 +78,8 @@ function Social() {
 
   useEffect(() => {
     setTitle("Social")
+    setSidebarCols(2)
+    setSidebar(<h5 className='text-dark'>Social sidebar</h5>)
   }, [])
   return (
     <>

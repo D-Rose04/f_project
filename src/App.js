@@ -10,7 +10,11 @@ import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Landing from "./pages/Landing/Landing";
 import { BounceLoader } from 'react-spinners';
-import { UseLoadingContext } from './firebase/hooks/UseLoading';
+import { UseLoadingContext } from './firebase/hooks/UseLoading'
+import MyPets from './pages/MyPets/MyPets';
+import LostPets from './pages/LostPets/LostPets';
+import Chat from './pages/Chat/Chat';
+import ChatDetails from './pages/Chat/ChatDetails/ChatDetails';
 
 export default function App () {
   const { currUser } = UseLoginContext();
@@ -39,6 +43,10 @@ export default function App () {
               currUser && currUser.uid ?
                 <Route path="/" element={<MainLayout />} children={[
                   <Route path="/" element={<Adopt />} />,
+                  <Route path="/my-pets" element={<MyPets />} />,
+                  <Route path="/lost-pets" element={<LostPets />} />,
+                  <Route path="/chat" element={<Chat />} />,
+                  <Route path="/chat/:chatId" element={<ChatDetails />} />,
                   <Route path="/social" element={<Social />} />,
                   <Route path="/profile" element={<Profile />} />,
                 ]} />

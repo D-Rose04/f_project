@@ -1,7 +1,7 @@
 import { deleteObject, getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../config/config-firebase";
 
-const BUCKET_URL = process.env.REACT_APP_FIREBASE_BUCKET_URL
+const BUCKET_URL = process.env.REACT_APP_FIREBASE_STORAGE_BUCKET
 const PROFILE_FOLDER='profile_pics'
 // Uploads image and returns the storage bucket
 // export async function uploadImage(image, uid) {

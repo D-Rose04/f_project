@@ -10,6 +10,10 @@ import { uploadProfilePicture } from '../../firebase/context/StorageContext'
 import { addUser } from '../../firebase/context/DatabaseContext'
 import { UseLoginContext } from '../../firebase/hooks/UseLogin'
 
+import { FaGoogle } from 'react-icons/fa'
+import { UseLoadingContext } from '../../firebase/hooks/UseLoading'
+
+
 function Register() {
     const [name, setName] = useState("")
     const [lastName, setLastName] = useState("")
@@ -18,14 +22,13 @@ function Register() {
     const [password, setPassword] = useState("")
     const [image, setImage] = useState("")
     const [completeFields, setCompleteFields] = useState(false)
-    const [isLoading, setLoading] = useState(false);
 
     const authContext = UseLoginContext();
     const navigate = useNavigate()
+    const { setLoading } = UseLoadingContext();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true)
+    const handleSubmit = async () => {
+        
 
         if (!name || !lastName || !phone || !email || !password || !image) {
             setCompleteFields(true)
@@ -33,18 +36,27 @@ function Register() {
         }
 
         try {
-            const userData=await authContext.SignUp(email, password)
+            setLoading(true)
+            const userData = await authContext.SignUp(email, password)
             const uid = userData.user.uid
-            console.log(uid)
-            const bucket=await uploadProfilePicture(image, uid)
+            // console.log(uid)
+            const bucket = await uploadProfilePicture(image, uid)
             await addUser(uid, name, lastName, phone, bucket)
             await authContext.SignOut()
+            navigate('/login')
         } catch (error) {
             console.error(error)
         }
-
         setLoading(false)
-        navigate('/')
+    }
+
+    const register = () => {
+        try {
+
+            // const result = authContext.SignIn(email, password)
+        } catch (error) {
+
+        }
     }
 
     const googleRegister = () => {
@@ -53,8 +65,6 @@ function Register() {
 
     return (
         <div className='h-100 bg-white'>
-            <form action='#' onSubmit={handleSubmit}>
-
                 <div className="position-absolute top-50 start-50 translate-middle row">
 
                     <div className="col bg-gray rounded-start-3 p-5">
@@ -103,8 +113,13 @@ function Register() {
                         </ReactInputMask>
                         {/* <input className="form-control py-2 px-4 rounded mt-3" style={styles.loginInput} type="text" name="user" id="txtUser" placeholder="Usuario" /> */}
 
-                        <button className="btn btn-primary w-100 mt-4" type="submit" disabled={isLoading}>{isLoading ? 'Registrando...' : 'Registrarse'}</button>
-                        <button className="btn btn-primary w-100 mt-2" type="button" onClick={googleRegister}>Registrarse con Google</button>
+                        <button className="btn btn-primary w-100 mt-4" type="submit" onClick={handleSubmit}>Registrarse</button>
+                        <button className="btn btn-primary w-100 mt-2" type="button" onClick={googleRegister}>
+                            <div className="d-flex justify-content-center align-items-center" >
+                                <FaGoogle />
+                                <p style={{ margin: 'auto 0 auto 10px' }}>Registrarse con Google</p>
+                            </div>
+                        </button>
                         <button className="btn btn-thistle w-100 mt-2" type="button" onClick={() => navigate('/login')}>Iniciar Sesion</button>
                         {completeFields && <h6 className='text-danger mt-2'>Rellena todos los campos</h6>}
                     </div>
@@ -137,7 +152,6 @@ function Register() {
                         />
                     </div>
                 </div>
-            </form>
 
         </div>
 

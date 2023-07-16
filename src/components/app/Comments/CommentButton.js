@@ -2,9 +2,7 @@ import React from 'react'
 import { useAccordionButton } from 'react-bootstrap';
 
 function CommentButton({ eventKey }) {
-    const toggleComments = useAccordionButton(eventKey, () => 
-        console.log("iywhhbfefni"),
-    );
+    const toggleComments = useAccordionButton(eventKey, () => {});
 
     return (
 
