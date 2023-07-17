@@ -4,7 +4,7 @@ import { useOutletContext, useParams } from 'react-router-dom'
 import '../Chat.css';
 import ChatSidebar from '../../../components/app/Chat/ChatSidebar';
 import ChatInput from '../../../components/app/Chat/ChatInput';
-import { loadMessages } from '../../../firebase/context/DatabaseContext';
+import { loadMessages } from '../../../firebase/context/Database/ChatContext';
 import Message from '../../../components/app/Chat/Message';
 
 function ChatDetails() {

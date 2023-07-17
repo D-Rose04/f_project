@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import styles from './ChatInput.styles.js'
 import { IoMdSend } from 'react-icons/io'
-import { sendMessage } from '../../../firebase/context/DatabaseContext.js'
+import { sendMessage } from '../../../firebase/context/Database/ChatContext.js'
 import { loginContext } from '../../../firebase/context/LoginContext.js'
 import { useParams } from 'react-router-dom'
 

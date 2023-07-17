@@ -24,7 +24,8 @@ function Login () {
   const handleSignInWithGoogle = async () => {
     setLoading( true );
     SignInWithGoogle()
-      .then( () => {
+      .then( (response) => {
+        //averiguar si el usuario es nuevo o no y a partir de ahi mandarlo a terminar el registro o al inicio
         setTimeout( () => {
           setLoading( false );
         }, 1500 );

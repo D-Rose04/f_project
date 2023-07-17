@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import ChatContact from './ChatContact'
-import { loadChats } from '../../../firebase/context/DatabaseContext'
+import { loadChats } from '../../../firebase/context/Database/ChatContext'
 import { loginContext } from '../../../firebase/context/LoginContext'
 import { UseLoadingContext } from '../../../firebase/hooks/UseLoading'
 
