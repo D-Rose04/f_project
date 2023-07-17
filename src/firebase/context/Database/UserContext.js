@@ -7,8 +7,8 @@ export async function checkEmail(email) {
     const emailQuery = query(collection(db, USERS_COLLECTION), where("email", "==", email));
 
     const emailSnapshot = await getDocs(emailQuery);
-    console.log(emailSnapshot)
-    // return emailSnapshot.lenght > 0
+    // console.log(emailSnapshot.docs)
+    return emailSnapshot.docs.length > 0
     //Sin terminar
 }
 
@@ -18,12 +18,12 @@ export async function getUserByUID(uid) {
     return userSnap.exists() ? userSnap.data() : null
 }
 
-export async function addUser(uid, email, name, lastname, phone, picture) {
+export async function addUser(uid, email, name, lastName, phone, picture) {
     const data = {
         uid,
         email,
         name,
-        lastname,
+        lastName,
         phone,
         picture,
         active: false,

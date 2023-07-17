@@ -48,7 +48,7 @@ export default function App () {
                   <Route path="/chat" element={<Chat />} />,
                   <Route path="/chat/:chatId" element={<ChatDetails />} />,
                   <Route path="/social" element={<Social />} />,
-                  <Route path="/profile" element={<Profile />} />,
+                  <Route path="/profile/:profileUID" element={<Profile />} />,
                 ]} />
                 : <Route path='/' element={<Landing />} />
             }

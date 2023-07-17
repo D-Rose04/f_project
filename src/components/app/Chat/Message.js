@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { loginContext } from '../../../firebase/context/LoginContext'
 import { formatDate, formatDateFromSecs } from '../../../firebase/hooks/CommonHooks'
 
-function Message({ message, lastMessage }) {
+function Message({ message, lastMessage, img }) {
     const authContext = useContext(loginContext)
     const { uid, text, seen, createdAt } = message
 
@@ -33,8 +33,8 @@ function Message({ message, lastMessage }) {
                     <div className="flex-shrink-0">
                         {lastMine ?
                             <div style={{ width: 35 + "px" }}></div> :
-                            <img className="img-fluid rounded-circle" width="35"
-                                src="https://images.placeholders.dev/?width=35&height=35" />}
+                            <img className="img-fluid rounded-circle object-fit-cover" width="35" style={{width:'35px', height:'35px'}}
+                                src={img} />}
                     </div>
                     <div className="message-text bg-indigo rounded-4 ms-1 p-2 ps-3 d-flex align-items-end flex-wrap justify-content-end">
                         <p className="m-0">

@@ -2,22 +2,38 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Logo from '../components/layout/Logo/Logo'
 import NavigationLink from '../components/layout/NavigationLink/NavigationLink'
 import NotificationButton from '../components/layout/NotificationButton/NotificationButton'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useParams } from 'react-router-dom'
 import ProfilePicture from '../components/layout/ProfilePicture/ProfilePicture'
 import { UseLoadingContext } from '../firebase/hooks/UseLoading'
+import { UseLoginContext } from '../firebase/hooks/UseLogin'
+import { getUserByUID } from '../firebase/context/Database/UserContext'
+import { getURL } from '../firebase/context/StorageContext'
 
 function MainLayout() {
   const [title, setTitle] = useState("Titulo")
   const [sidebar, setSidebar] = useState()
   const [sidebarCols, setSidebarCols] = useState(2)
   const [sidebarWidth, setSidebarWidth] = useState()
+  const [user, setUser] = useState([{}])
 
   const { loading, setLoading } = UseLoadingContext()
+  const { currUser } = UseLoginContext()
 
   const layoutRowRef = useRef()
   const layoutContentRef = useRef()
   const sidebarRef = useRef(null)
   const sidebarContentRef = useRef(null)
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const userData = await getUserByUID(currUser.uid)
+      userData.imgUrl = await getURL(userData.picture)
+      const userArr = [userData]
+      setUser(userArr)
+    }
+
+    loadUser()
+  }, [])
 
   useEffect(() => setSidebarWidth(sidebarRef.current.offsetWidth), [sidebarCols])
 
@@ -61,7 +77,7 @@ function MainLayout() {
             </div>
             <div className="">
               <div className="d-flex flex-row-reverse justify-content-between align-items-center">
-                <ProfilePicture pictureImg={"https://images.placeholders.dev/?width=60&height=60"} />
+                <ProfilePicture pictureImg={user[0].imgUrl} profileUrl={"/profile/" + user[0].uid} />
                 <NotificationButton href={'#'} count={16} image={'notification'} />
                 <NotificationButton href={'/chat'} count={9} image={'chat'} />
               </div>

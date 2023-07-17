@@ -7,12 +7,12 @@ import { useEffect } from 'react'
 import ImagePicker from '../../components/layout/ImagePicker/ImagePicker'
 import { useNavigate } from 'react-router-dom'
 import { uploadProfilePicture } from '../../firebase/context/StorageContext'
-import { addUser } from '../../firebase/context/Database/ChatContext'
 import { UseLoginContext } from '../../firebase/hooks/UseLogin'
 
 import { FaGoogle } from 'react-icons/fa'
 import { UseLoadingContext } from '../../firebase/hooks/UseLoading'
-import { checkEmail } from '../../firebase/context/Database/UserContext'
+import { addUser, checkEmail } from '../../firebase/context/Database/UserContext'
+import { createUserChat } from '../../firebase/context/Database/ChatContext'
 
 
 function Register() {
@@ -44,13 +44,14 @@ function Register() {
 
             setLoading(true)
 
-            // const userData = await authContext.SignUp(email, password)
-            // const uid = userData.user.uid
-            // // console.log(uid)
-            // const bucket = await uploadProfilePicture(image, uid)
-            // await addUser(uid, name, lastName, phone, bucket)
-            // await authContext.SignOut()
-            // navigate('/login')
+            const userData = await authContext.SignUp(email, password)
+            const uid = userData.user.uid
+            // console.log(uid)
+            const bucket = await uploadProfilePicture(image, uid)
+            await addUser(uid, email, name, lastName, phone, bucket)
+            await createUserChat(uid)
+            await authContext.SignOut()
+            navigate('/login')
         } catch (error) {
             console.error(error)
         }
