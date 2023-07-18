@@ -16,7 +16,7 @@ function PetCard({ id, image, name, race, age, location, vacuna = false }) {
     }
 
     useEffect(()=>{
-console.log(id)
+        
     },[])
 
     return (

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { auth } from "../config/config-firebase";
+import { auth, db } from "../config/config-firebase";
+import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import {
     createUserWithEmailAndPassword,
     onAuthStateChanged,
@@ -10,12 +11,14 @@ import {
     signInWithPopup
 } from 'firebase/auth';
 
-export const loginContext = React.createContext();
 
 export function LoginProvider ( { children } ) {
-    const [currUser, setCurrUser] = useState();
+    const USER_COLLECTION = "users";
     const provider = new GoogleAuthProvider();
+    const [currUser, setCurrUser] = useState();
+    const [userInfo, setUserInfo] = useState();
     const [logged, setLogged] = useState( false );
+    const userRef = collection( db, USER_COLLECTION )
 
     async function SignUp ( email, pwd ) {
         return await createUserWithEmailAndPassword( auth, email, pwd );
@@ -26,7 +29,40 @@ export function LoginProvider ( { children } ) {
     }
 
     async function SignInWithGoogle () {
-        return signInWithPopup( auth, provider );
+        const credential = await signInWithPopup( auth, provider );
+        const fullName = await credential.user.displayName.split( ' ' );
+
+        const userExist = await getUser( await credential.user.uid );
+        if ( await !userExist ) {
+            AddUser( await credential.user.uid,
+                fullName[0],
+                fullName[1] ?? "",
+                await credential.user.phoneNumber ?? "",
+                "",
+                await credential.providerId ?? "",
+                true );
+        }
+
+        getUser( await credential.user.uid );
+        return credential;
+    }
+
+    async function AddUser ( uid, name, lastname, phone, picture, providerId, providerImage ) {
+        const data = {
+            uid,
+            name,
+            lastname,
+            phone,
+            picture,
+            active: false,
+            location: null,
+            country: null,
+            favoritePets: [],
+            notifications: [],
+            providerId,
+            providerImage
+        }
+        await addDoc( userRef, data )
     }
 
     async function updateUserName ( userName ) {
@@ -37,8 +73,24 @@ export function LoginProvider ( { children } ) {
         signOut( auth );
     }
 
+    async function getUser ( uid ) {
+        const q = query( userRef, where( "uid", "==", uid ) );
+        const user = ( await getDocs( q ) ).docs.at( 0 )?.data();
+        setUserInfo( await user );
+        return user;
+    }
+
+    async function changePassword(){
+        
+    }
+
+
     useEffect( () => {
-        const unsubscribe = onAuthStateChanged( auth, ( user ) => { setCurrUser( user ); } );
+        const unsubscribe = onAuthStateChanged( auth, ( user ) => {
+            setCurrUser( user );
+            if ( user )
+                getUser( user.uid );
+        } );
         return unsubscribe;
     }, [] );
 
@@ -51,6 +103,8 @@ export function LoginProvider ( { children } ) {
         logged,
         setLogged,
         SignOut,
+        userInfo,
+        getUser
     };
 
     return (
@@ -59,3 +113,4 @@ export function LoginProvider ( { children } ) {
         </loginContext.Provider>
     )
 }
+export const loginContext = React.createContext();
