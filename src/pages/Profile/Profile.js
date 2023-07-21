@@ -5,7 +5,7 @@ import { UseLoadingContext } from '../../firebase/hooks/UseLoading';
 import { signOut } from 'firebase/auth';
 import { getUserByUID } from '../../firebase/context/Database/UserContext';
 import { getURL } from '../../firebase/context/StorageContext';
-import { createChat } from '../../firebase/context/Database/ChatContext';
+import {  checkChatByUsers, createChat } from '../../firebase/context/Database/ChatContext';
 
 function Profile() {
   const [user, setUser] = useState([{}])
@@ -43,7 +43,11 @@ function Profile() {
   }, [user])
 
   const startChat = async () => {
-    const chatId = await createChat(currUser.uid, user[0].uid)
+    let chatId = await checkChatByUsers(currUser.uid, user[0].uid)
+
+    if (!chatId) {
+      chatId = await createChat(currUser.uid, user[0].uid)
+    }
     navigate("/chat/" + chatId)
   }
 

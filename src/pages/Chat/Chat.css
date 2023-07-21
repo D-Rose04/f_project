@@ -1,6 +1,16 @@
 .message-text{
-    max-width: 80%;
     font-size: 16px;
+}
+
+.message-body{
+    max-width: 80%;
+}
+
+.message-img{
+    width: 100%;
+    max-height: 600px;
+    object-fit: cover;
+    cursor: pointer;
 }
 
 .next{
