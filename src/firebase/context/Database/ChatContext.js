@@ -136,6 +136,25 @@ export async function sendMessageWithImage(uid, text, image, chatId) {
     await updateUserChats(uid, chatId, text, time)
 }
 
+export async function seeMessages(chatId, uid, contactUid) {
+    const userChatRef = doc(db, USER_CHATS_COLLECTION, uid)
+    const userChatSnap = await getDoc(userChatRef)
+    const userChatData = userChatSnap.data()
+
+    if (userChatData[chatId].uidSent == uid) return;
+
+    const contactChatRef = doc(db, USER_CHATS_COLLECTION, contactUid)
+
+    await updateDoc(userChatRef, {
+        [chatId + ".seen"]: true
+    })
+
+    await updateDoc(contactChatRef, {
+        [chatId + ".seen"]: true
+    })
+
+}
+
 //este solo para usarlo internamente
 async function updateUserChats(uid, chatId, message, time) {
     const chatRef = doc(db, CHATS_COLLECTION, chatId);
@@ -155,13 +174,15 @@ async function updateUserChats(uid, chatId, message, time) {
     await updateDoc(myChatRef, {
         [chatId + ".lastMessage"]: message,
         [chatId + ".sentAt"]: time,
-        [chatId + ".uidSent"]: uid
+        [chatId + ".uidSent"]: uid,
+        [chatId + ".seen"]: false
     });
 
     //update his userChat
     await updateDoc(hisChatRef, {
         [chatId + ".lastMessage"]: message,
         [chatId + ".sentAt"]: time,
-        [chatId + ".uidSent"]: uid
+        [chatId + ".uidSent"]: uid,
+        [chatId + ".seen"]: false
     });
 }

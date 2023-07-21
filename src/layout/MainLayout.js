@@ -8,6 +8,7 @@ import { UseLoadingContext } from '../firebase/hooks/UseLoading'
 import { UseLoginContext } from '../firebase/hooks/UseLogin'
 import { getUserByUID } from '../firebase/context/Database/UserContext'
 import { getURL } from '../firebase/context/StorageContext'
+import ChatNotification from '../components/layout/ChatNotification/ChatNotification'
 
 function MainLayout() {
   const [title, setTitle] = useState("Titulo")
@@ -47,11 +48,6 @@ function MainLayout() {
     layoutContentRef.current.style.backgroundColor = title == "Chat" ? "var(--color-wisteria)" : "var(--color-thistle)"
   }, [title])
 
-  const algo = () => {
-    console.log("bottom:", layoutRowRef.current.scrollBottom)
-    console.log("height:", layoutRowRef.current.scrollHeight)
-  }
-
   return (
     <div className="container-fluid h-100 bg-indigo">
       <div className="row h-100">
@@ -79,11 +75,11 @@ function MainLayout() {
               <div className="d-flex flex-row-reverse justify-content-between align-items-center">
                 <ProfilePicture pictureImg={user[0].imgUrl} profileUrl={"/profile/" + user[0].uid} />
                 <NotificationButton href={'#'} count={16} image={'notification'} />
-                <NotificationButton href={'/chat'} count={9} image={'chat'} />
+                <ChatNotification href={'/chat'} count={9} image={'chat'} />
               </div>
             </div>
           </div>
-          <div className="layout-row overflow-y-scroll row mt-1" ref={layoutRowRef} onScroll={algo}>
+          <div className="layout-row overflow-y-scroll row mt-1" ref={layoutRowRef}>
             <div className="layout-content col bg-thistle rounded my-2 ms-2" style={{ marginRight: "0.5em" }} ref={layoutContentRef}>
               <Outlet context={[setTitle, setSidebar, setSidebarCols, layoutRowRef /*This one only for the chat*/, sidebarContentRef, layoutContentRef]} />
             </div>

@@ -4,7 +4,7 @@ import { useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import '../Chat.css';
 import ChatSidebar from '../../../components/app/Chat/ChatSidebar';
 import ChatInput from '../../../components/app/Chat/ChatInput';
-import { checkChatById, checkChatOwner, loadMessages, loadUserChat } from '../../../firebase/context/Database/ChatContext';
+import { checkChatById, checkChatOwner, loadMessages, loadUserChat, seeMessages } from '../../../firebase/context/Database/ChatContext';
 import Message from '../../../components/app/Chat/Message';
 import { UseLoginContext } from '../../../firebase/hooks/UseLogin';
 import { getURL } from '../../../firebase/context/StorageContext';
@@ -14,14 +14,13 @@ function ChatDetails() {
     const [setTitle, setSidebar, setSidebarCols, layoutRowRef, , layoutContentRef] = useOutletContext()
     const { chatId } = useParams()
     const navigate = useNavigate();
+    const { currUser } = UseLoginContext()
 
     const [messages, setMessages] = useState([])
     const [contactImg, setContactImg] = useState()
-    const { currUser } = UseLoginContext()
-    // const [firstTime, setFirstTime] = useState(false)
-
     const [showModal, setShowModal] = useState(false)
     const [modalImgUrl, setModalImgUrl] = useState("")
+    const [contactUID, setContactUID] = useState(null)
 
     const lowerScroll = () => {
         const chatContainer = layoutRowRef.current;
@@ -49,7 +48,9 @@ function ChatDetails() {
             setSidebar(<ChatSidebar height={layoutRowRef.current.offsetHeight * 0.80} />)
 
             loadMessages(chatId, (doc) => {
-                const messagesData = doc.data().messages
+                const data = doc.data()
+                const messagesData = data.messages
+                setContactUID(data.users[0] == currUser.uid ? data.users[1] : data.users[0])
                 setMessages(messagesData)
             })
 
@@ -67,6 +68,16 @@ function ChatDetails() {
 
     useEffect(() => {
         lowerScroll()
+
+        const checkMessagesSeen = async () => {
+            await seeMessages(chatId, currUser.uid, contactUID)
+        }
+
+        if (chatId && currUser.uid && contactUID) {
+            console.log("asdfghjklñ")
+            checkMessagesSeen()
+        }
+
     }, [messages]);
 
     const showImageModal = async (imgBucket) => {
