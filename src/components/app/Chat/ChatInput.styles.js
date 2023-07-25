@@ -1,7 +1,5 @@
 export default {
-    chatInputContainer: {
-      width: '67.5%',
-    },
+
     chatInput: {
       border: 'none',
       borderBottom: '1px solid white',
@@ -16,6 +14,7 @@ export default {
       color: 'var(--color-white)',
       maxHeight: '121px',
       fontSize: '14px',
+      resize: 'none',
       '&:focus': {
         boxShadow: 'none',
         border: 'none',

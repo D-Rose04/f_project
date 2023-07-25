@@ -10,7 +10,7 @@ import {
     signInWithPopup
 } from 'firebase/auth';
 
-export const context = React.createContext();
+export const loginContext = React.createContext();
 
 export function LoginProvider ( { children } ) {
     const [currUser, setCurrUser] = useState();
@@ -21,19 +21,19 @@ export function LoginProvider ( { children } ) {
         return await createUserWithEmailAndPassword( auth, email, pwd );
     }
 
-    function SignIn ( email, pwd ) {
-        return signInWithEmailAndPassword( auth, email, pwd );
+    async function SignIn ( email, pwd ) {
+        return signInWithEmailAndPassword( auth, email, pwd )
     }
 
-    function SignInWithGoogle () {
+    async function SignInWithGoogle () {
         return signInWithPopup( auth, provider );
     }
 
-    function updateUserName ( userName ) {
+    async function updateUserName ( userName ) {
         updateProfile( auth.currentUser, { displayName: userName } );
     }
 
-    function SignOut () {
+    async function SignOut () {
         signOut( auth );
     }
 
@@ -42,7 +42,7 @@ export function LoginProvider ( { children } ) {
         return unsubscribe;
     }, [] );
 
-    const value = {
+    const LOGIN = {
         currUser,
         SignUp,
         SignIn,
@@ -54,8 +54,8 @@ export function LoginProvider ( { children } ) {
     };
 
     return (
-        <context.Provider value={value}>
+        <loginContext.Provider value={LOGIN}>
             {children}
-        </context.Provider>
+        </loginContext.Provider>
     )
 }

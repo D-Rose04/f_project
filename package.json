@@ -14,13 +14,16 @@
     "react-bootstrap": "^2.7.4",
     "react-bootstrap-icons": "^1.10.3",
     "react-dom": "^18.2.0",
-    "react-firebaseui": "^6.0.0",
     "react-icons": "^4.10.1",
     "react-input-mask": "^2.0.4",
     "react-popper": "^2.3.0",
     "react-router-dom": "^6.13.0",
     "react-scripts": "5.0.1",
+    "react-spinners": "^0.13.8",
+    "react-toastr": "^3.0.0",
+    "react-useanimations": "^2.10.0",
     "react-wavy-transitions": "^1.1.1",
+    "use-sound": "^4.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
