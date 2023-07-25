@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { loadChats } from '../../../firebase/context/Database/ChatContext';
 import { UseLoginContext } from '../../../firebase/hooks/UseLogin';
-import notifSound from '../../../sounds/msg_notif.wav'
+import notifSound from '../../../sounds/msg_notif.mp3'
 import useSound from 'use-sound';
 
 

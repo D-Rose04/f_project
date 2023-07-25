@@ -22,7 +22,7 @@ export function LoginProvider ( { children } ) {
     }
 
     async function SignIn ( email, pwd ) {
-        return signInWithEmailAndPassword( auth, email, pwd );
+        return signInWithEmailAndPassword( auth, email, pwd )
     }
 
     async function SignInWithGoogle () {

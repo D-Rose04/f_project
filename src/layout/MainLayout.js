@@ -2,13 +2,14 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Logo from '../components/layout/Logo/Logo'
 import NavigationLink from '../components/layout/NavigationLink/NavigationLink'
 import NotificationButton from '../components/layout/NotificationButton/NotificationButton'
-import { Outlet, useParams } from 'react-router-dom'
+import { Link, Outlet, useNavigate, useParams } from 'react-router-dom'
 import ProfilePicture from '../components/layout/ProfilePicture/ProfilePicture'
 import { UseLoadingContext } from '../firebase/hooks/UseLoading'
 import { UseLoginContext } from '../firebase/hooks/UseLogin'
 import { getUserByUID } from '../firebase/context/Database/UserContext'
 import { getURL } from '../firebase/context/StorageContext'
 import ChatNotification from '../components/layout/ChatNotification/ChatNotification'
+import { Dropdown } from 'react-bootstrap'
 
 function MainLayout() {
   const [title, setTitle] = useState("Titulo")

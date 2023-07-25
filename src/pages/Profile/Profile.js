@@ -61,7 +61,7 @@ function Profile() {
           <p className="fs-5">{user[0].phone}</p>
         </div>
         <div className="d-flex flex-column align-items-center p-3">
-          <img className="rounded-circle" src="https://images.placeholders.dev/?width=150&height=150" alt="" />
+          <img className="rounded-circle" width={150} src={require("../../img/logo.png")} alt="" />
           <span className="fw-bold fs-4 my-4">Seguridad</span>
           {currUser.uid == user[0].uid ? <>
             <button className="w-100 shadow text-dark btn btn-thistle">Cambiar Contraseña</button>
