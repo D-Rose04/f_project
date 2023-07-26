@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { auth, db } from "../config/config-firebase";
-import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import {
     createUserWithEmailAndPassword,
     onAuthStateChanged,
@@ -29,27 +29,37 @@ export function LoginProvider ( { children } ) {
     }
 
     async function SignInWithGoogle () {
-        const credential = await signInWithPopup( auth, provider );
-        const fullName = await credential.user.displayName.split( ' ' );
+        try {
+            const credential = await signInWithPopup( auth, provider );
+            const fullName = await credential.user.displayName.split( ' ' );
 
-        const userExist = await getUser( await credential.user.uid );
-        if ( await !userExist ) {
-            AddUser( await credential.user.uid,
-                fullName[0],
-                fullName[1] ?? "",
-                await credential.user.phoneNumber ?? "",
-                "",
-                await credential.providerId ?? "",
-                true );
+            const userExist = await getUser( await credential.user.uid );
+
+            if ( await !userExist ) {
+                AddUser(
+                    await credential.user.uid,
+                    await credential.user.email,
+                    fullName[0],
+                    fullName[1] ?? "",
+                    await credential.user.phoneNumber ?? "",
+                    "",
+                    await credential.providerId ?? "",
+                    true
+                );
+            }
+            getUser( await credential.user.uid );
+            return credential;
         }
+        catch ( Exception ) {
 
-        getUser( await credential.user.uid );
-        return credential;
+        }
     }
 
-    async function AddUser ( uid, name, lastname, phone, picture, providerId, providerImage ) {
+    async function AddUser ( uid, email, name, lastname, phone, picture, providerId, providerImage ) {
+        const docRef = doc(db, USER_COLLECTION,uid)
         const data = {
             uid,
+            email,
             name,
             lastname,
             phone,
@@ -62,7 +72,7 @@ export function LoginProvider ( { children } ) {
             providerId,
             providerImage
         }
-        await addDoc( userRef, data )
+        await setDoc( docRef, data )
     }
 
     async function updateUserName ( userName ) {
@@ -80,10 +90,9 @@ export function LoginProvider ( { children } ) {
         return user;
     }
 
-    async function changePassword(){
-        
-    }
+    async function changePassword () {
 
+    }
 
     useEffect( () => {
         const unsubscribe = onAuthStateChanged( auth, ( user ) => {

@@ -17,19 +17,26 @@ function Login () {
   };
 
   const handleSignIn = async () => {
-    await SignIn( user.txtEmail, user.txtPass );
-    navigate( "/" );
+    setLoading( true );
+    await SignIn( user.txtEmail, user.txtPass ).finally( () => {
+      setLoading( false );
+      navigate( "/" );
+    } );
   }
 
   const handleSignInWithGoogle = async () => {
     setLoading( true );
     SignInWithGoogle()
-      .then( () => {
+      .then( ( response ) => {
+        //averiguar si el usuario es nuevo o no y a partir de ahi mandarlo a terminar el registro o al inicio
         setTimeout( () => {
           setLoading( false );
         }, 1500 );
       } )
-      .finally( () => navigate( "/" ) );
+      .finally( () => {
+        setLoading( false )
+        navigate( "/" )
+      } );
   }
   return (
     <div className="position-absolute top-50 start-50 translate-middle row">

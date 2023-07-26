@@ -58,10 +58,11 @@ function MyPets() {
     },
 
   ]
-  const [setTitle, setSidebar] = useOutletContext()
+  const [setTitle, setSidebar, setSidebarCols] = useOutletContext()
   useEffect(() => {
     setTitle("Mis mascotas")
     setSidebar(<Button variant='primary' onClick={()=>navigate('add-pet')}>Agregar</Button>)
+    setSidebarCols(2)
   }, [])
 
   return (

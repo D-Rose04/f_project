@@ -1,7 +1,5 @@
 export default {
-    chatInputContainer: {
-      width: '67.5%',
-    },
+
     chatInput: {
       border: 'none',
       borderBottom: '1px solid white',

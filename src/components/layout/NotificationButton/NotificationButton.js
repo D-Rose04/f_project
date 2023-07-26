@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 function NotificationButton({ image, count, href }) {
     const img = require('./../../../img/icons/' + image + '.png');
     return (
-        <Link className="position-relative ms-3" to={href}>
+        <Link className="position-relative ms-3" to={href} >
             <img width="30" className="rounded-circle img-fluid"
                 src={img} alt="" />
             <span

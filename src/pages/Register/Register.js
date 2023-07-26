@@ -1,14 +1,18 @@
-import React from 'react'
-import styles from './Register.styles'
 import './Register.css'
+import styles from './Register.styles'
+import React, { useState } from 'react'
 import ReactInputMask from 'react-input-mask'
-import { useState } from 'react'
-import { useEffect } from 'react'
 import ImagePicker from '../../components/layout/ImagePicker/ImagePicker'
 import { useNavigate } from 'react-router-dom'
 import { uploadProfilePicture } from '../../firebase/context/StorageContext'
-import { addUser } from '../../firebase/context/DatabaseContext'
 import { UseLoginContext } from '../../firebase/hooks/UseLogin'
+
+import { FaGoogle } from 'react-icons/fa'
+import { UseLoadingContext } from '../../firebase/hooks/UseLoading'
+import { addUser, checkEmail } from '../../firebase/context/Database/UserContext'
+import { createUserChat } from '../../firebase/context/Database/ChatContext'
+import { DEFAULT_PROVIDER } from '../../utils/constants'
+
 
 function Register () {
     const [name, setName] = useState( "" )
@@ -17,38 +21,39 @@ function Register () {
     const [email, setEmail] = useState( "" )
     const [password, setPassword] = useState( "" )
     const [image, setImage] = useState( "" )
+    const [emailInUse, setEmailInUse] = useState( false )
     const [completeFields, setCompleteFields] = useState( false )
-    const [isLoading, setLoading] = useState( false );
 
     const authContext = UseLoginContext();
     const navigate = useNavigate()
+    const { setLoading } = UseLoadingContext();
 
-    const handleSubmit = async ( e ) => {
-        e.preventDefault();
-        setLoading( true );
-
+    const handleSubmit = async () => {
         if ( !name || !lastName || !phone || !email || !password || !image ) {
-            setCompleteFields( true );
+            setCompleteFields( true )
             return
         }
 
         try {
-            const userData = await authContext.SignUp( email, password );
-            const uid = userData.user.uid;
-            console.log( uid );
-            const bucket = await uploadProfilePicture( image, uid );
-            await handleUserInfo( uid, name, lastName, phone, bucket, userData.user.providerId, false );
-            await authContext.SignOut();
+            if ( await checkEmail( email ) ) {
+                setLoading( false )
+                setEmailInUse( true )
+                return
+            }
+            setLoading( true );
+            const userData = await authContext.SignUp( email, password )
+            const uid = userData.user.uid
+            const bucket = await uploadProfilePicture( image, uid )
+            await addUser( uid, email, name, lastName, phone, bucket, DEFAULT_PROVIDER, false );
+            await createUserChat( uid )
+            await authContext.SignOut()
+            navigate( '/login' )
         } catch ( error ) {
             console.error( error )
         }
-
-        setLoading( false );
-        navigate( '/' );
-    }
-
-    const handleUserInfo = async ( uid, name, lastName, phone, picture, providerId, providerImage ) => {
-        await addUser( uid, name, lastName, phone, picture, providerId, providerImage )
+        finally {
+            setLoading( false );
+        }
     }
 
     const googleRegister = async () => {
@@ -58,94 +63,94 @@ function Register () {
 
     return (
         <div className='h-100 bg-white'>
-            <form action='#' onSubmit={handleSubmit}>
+            <div className="position-absolute top-50 start-50 translate-middle row">
+                <div className="col bg-gray rounded-start-3 p-5">
+                    <div className="d-flex justify-content-center align-items-center gap-3">
+                        <h3 className="fw-bold">Happy Feets</h3>
+                        <img className="img-fluid rounded-circle" width={50} src={require( "../../img/logo.png" )} alt="" />
+                    </div>
+                    <input
+                        className="form-control py-2 px-4 rounded mt-3"
+                        style={styles.loginInput}
+                        type="text"
+                        name="name"
+                        id="txtName"
+                        placeholder="Nombre"
+                        required
+                        value={name}
+                        onChange={( e ) => setName( e.target.value )}
+                    />
 
-                <div className="position-absolute top-50 start-50 translate-middle row">
+                    <input
+                        className="form-control py-2 px-4 rounded mt-3"
+                        style={styles.loginInput}
+                        type="text"
+                        name="lastname"
+                        id="txtApe"
+                        placeholder="Apellido"
+                        required
+                        value={lastName}
+                        onChange={( e ) => setLastName( e.target.value )}
+                    />
 
-                    <div className="col bg-gray rounded-start-3 p-5">
-                        <div className="d-flex justify-content-center align-items-center gap-3">
-                            <h3 className="fw-bold">Happy Feets</h3>
-                            <img className="img-fluid rounded-circle" width={50} src={require( "../../img/logo.png" )} alt="" />
+                    <ReactInputMask mask="(999) 999-9999">
+                        {( inputProps ) => (
+                            <input
+                                {...inputProps}
+                                className="form-control py-2 px-4 rounded mt-3"
+                                style={styles.loginInput}
+                                type="text"
+                                name="phone"
+                                id="txtPhone"
+                                placeholder="Telefono"
+                                required
+                                onInput={( e ) => setPhone( e.target.value )}
+                            />
+                        )}
+                    </ReactInputMask>
+                    {/* <input className="form-control py-2 px-4 rounded mt-3" style={styles.loginInput} type="text" name="user" id="txtUser" placeholder="Usuario" /> */}
+
+                    <button className="btn btn-primary w-100 mt-4" type="submit" onClick={handleSubmit}>Registrarse</button>
+                    <button className="btn btn-primary w-100 mt-2" type="button" onClick={googleRegister}>
+                        <div className="d-flex justify-content-center align-items-center" >
+                            <FaGoogle />
+                            <p style={{ margin: 'auto 0 auto 10px' }}>Registrarse con Google</p>
                         </div>
-                        <input
-                            className="form-control py-2 px-4 rounded mt-3"
-                            style={styles.loginInput}
-                            type="text"
-                            name="name"
-                            id="txtName"
-                            placeholder="Nombre"
-                            required
-                            value={name}
-                            onChange={( e ) => setName( e.target.value )}
-                        />
-
-                        <input
-                            className="form-control py-2 px-4 rounded mt-3"
-                            style={styles.loginInput}
-                            type="text"
-                            name="lastname"
-                            id="txtApe"
-                            placeholder="Apellido"
-                            required
-                            value={lastName}
-                            onChange={( e ) => setLastName( e.target.value )}
-                        />
-
-                        <ReactInputMask mask="(999) 999-9999">
-                            {( inputProps ) => (
-                                <input
-                                    {...inputProps}
-                                    className="form-control py-2 px-4 rounded mt-3"
-                                    style={styles.loginInput}
-                                    type="text"
-                                    name="phone"
-                                    id="txtPhone"
-                                    placeholder="Telefono"
-                                    required
-                                    onInput={( e ) => setPhone( e.target.value )}
-                                />
-                            )}
-                        </ReactInputMask>
-                        {/* <input className="form-control py-2 px-4 rounded mt-3" style={styles.loginInput} type="text" name="user" id="txtUser" placeholder="Usuario" /> */}
-
-                        <button className="btn btn-primary w-100 mt-4" type="submit" disabled={isLoading}>{isLoading ? 'Registrando...' : 'Registrarse'}</button>
-                        <button className="btn btn-primary w-100 mt-2" type="button" onClick={googleRegister}>Registrarse con Google</button>
-                        <button className="btn btn-thistle w-100 mt-2" type="button" onClick={() => navigate( '/login' )}>Iniciar Sesion</button>
-                        {completeFields && <h6 className='text-danger mt-2'>Rellena todos los campos</h6>}
-                    </div>
-                    <div className="col bg-indigo p-5 rounded-end-3">
-                        <ImagePicker controlId="inputImg" width="300" name="image" title="Selecciona una imagen" onImageSet={( image ) => setImage( image )} />
-                        {/* <h3 className="fw-bold text-white mt-2 text-center">Bienvenido a Happy Feets</h3> */}
-
-                        <input
-                            className="form-control py-2 px-4 rounded mt-3"
-                            style={styles.loginInput}
-                            type="email"
-                            name="email"
-                            id="txtEmail"
-                            placeholder="Email"
-                            required
-                            value={email}
-                            onChange={( e ) => setEmail( e.target.value )}
-                        />
-
-                        <input
-                            className="form-control py-2 px-4 rounded mt-2"
-                            style={styles.loginInput}
-                            type="password"
-                            name="password"
-                            id="txtPass"
-                            placeholder="Contraseña"
-                            required
-                            value={password}
-                            onChange={( e ) => setPassword( e.target.value )}
-                        />
-                    </div>
+                    </button>
+                    <button className="btn btn-thistle w-100 mt-2" type="button" onClick={() => navigate( '/login' )}>Iniciar Sesion</button>
+                    {completeFields && <h6 className='text-danger mt-2'>Rellena todos los campos</h6>}
                 </div>
-            </form>
+                <div className="col bg-indigo p-5 rounded-end-3">
+                    <ImagePicker controlId="inputImg" width="300" name="image" title="Selecciona una imagen" onImageSet={( image ) => setImage( image )} />
+                    {/* <h3 className="fw-bold text-white mt-2 text-center">Bienvenido a Happy Feets</h3> */}
 
+                    <input
+                        className="form-control py-2 px-4 rounded mt-3"
+                        style={styles.loginInput}
+                        type="email"
+                        name="email"
+                        id="txtEmail"
+                        placeholder="Email"
+                        required
+                        value={email}
+                        onChange={( e ) => setEmail( e.target.value )}
+                    />
+                    {emailInUse && <h6 className='text-danger mt-2'>Este email ya esta en uso</h6>}
+
+                    <input
+                        className="form-control py-2 px-4 rounded mt-2"
+                        style={styles.loginInput}
+                        type="password"
+                        name="password"
+                        id="txtPass"
+                        placeholder="Contraseña"
+                        required
+                        value={password}
+                        onChange={( e ) => setPassword( e.target.value )}
+                    />
+                </div>
+            </div>
         </div>
-
     )
 }
 
