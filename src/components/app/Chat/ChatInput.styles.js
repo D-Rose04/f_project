@@ -14,6 +14,7 @@ export default {
       color: 'var(--color-white)',
       maxHeight: '121px',
       fontSize: '14px',
+      resize: 'none',
       '&:focus': {
         boxShadow: 'none',
         border: 'none',

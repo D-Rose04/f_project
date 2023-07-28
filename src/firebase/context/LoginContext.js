@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { auth, db } from "../config/config-firebase";
-import { addDoc, collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
+import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore';
 import {
     createUserWithEmailAndPassword,
     onAuthStateChanged,
@@ -8,7 +8,8 @@ import {
     updateProfile,
     signOut,
     GoogleAuthProvider,
-    signInWithPopup
+    signInWithPopup,
+    updatePassword
 } from 'firebase/auth';
 
 
@@ -25,7 +26,7 @@ export function LoginProvider ( { children } ) {
     }
 
     async function SignIn ( email, pwd ) {
-        return signInWithEmailAndPassword( auth, email, pwd );
+        return signInWithEmailAndPassword( auth, email, pwd )
     }
 
     async function SignInWithGoogle () {
@@ -56,7 +57,7 @@ export function LoginProvider ( { children } ) {
     }
 
     async function AddUser ( uid, email, name, lastname, phone, picture, providerId, providerImage ) {
-        const docRef = doc(db, USER_COLLECTION,uid)
+        const docRef = doc( db, USER_COLLECTION, uid )
         const data = {
             uid,
             email,
@@ -90,7 +91,15 @@ export function LoginProvider ( { children } ) {
         return user;
     }
 
-    async function changePassword () {
+    async function UpdatePassword ( oldPassword, newPwd ) {
+        try {
+
+            signInWithEmailAndPassword( auth.currentUser.email, oldPassword )
+                .then( () => updatePassword( auth.currentUser, newPwd ) );
+        }
+        catch ( ex ) {
+
+        }
 
     }
 
@@ -113,7 +122,8 @@ export function LoginProvider ( { children } ) {
         setLogged,
         SignOut,
         userInfo,
-        getUser
+        getUser,
+        UpdatePassword
     };
 
     return (

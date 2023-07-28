@@ -12,14 +12,23 @@ function ChatSidebar({ height }) {
 
   useEffect(() => {
     const compareChatDates = (a, b) => {
-      if (a.sentAt < b.sentAt)
-        return -1
+      console.log(a)
+      console.log(b)
 
-      if (a.sentAt > b.sentAt)
+      if (a.sentAt < b.sentAt) {
+        console.log("a < b")
         return 1
+      }
 
-      if (a.sentAt == b.sentAt)
+      if (a.sentAt > b.sentAt) {
+        console.log("a > b")
+        return -1
+      }
+
+      if (a.sentAt == b.sentAt) {
+        console.log("a == b")
         return 0
+      }
     }
 
     loadChats(authData.currUser.uid, doc => {

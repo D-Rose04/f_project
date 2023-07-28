@@ -1,32 +1,33 @@
 import styles from '../Register/Register.styles';
 import React, { useEffect, useState } from 'react';
-import ReactInputMask from 'react-input-mask';
 import ImagePicker from '../../components/layout/ImagePicker/ImagePicker';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import { UseLoginContext } from '../../firebase/hooks/UseLogin';
 import { UseLoadingContext } from '../../firebase/hooks/UseLoading';
 import { getURL } from '../../firebase/context/StorageContext';
-import { createChat } from '../../firebase/context/Database/ChatContext';
 import { DEFAULT_PROVIDER, DEFAULT_USER_IMAGE } from '../../utils/constants';
 import BackButton from '../../components/layout/BackButton/BackButton';
 import { useUserContext } from '../../firebase/hooks/UseUser';
+import { checkChatByUsers, createChat } from '../../firebase/context/Database/ChatContext';
+import { async } from 'q';
 
 function Profile () {
   const navigate = useNavigate();
-  const [user, setUser] = useState( [{}] );
   const [userInfo, setUserInfo] = useState();
   const [image, setImage] = useState( "" );
+  const [user, setUser] = useState( [{}] )
   const [edit, setEdit] = useState( false );
+  const [changePassword, setChangePassword] = useState( false );
+  const [password, setPassword] = useState( { currPassword: "", newPassword: "", confirmPassword: "" } );
   const [setTitle] = useOutletContext();
-  const { currUser, SignOut, getUser } = UseLoginContext();
+  const { currUser, SignOut, getUser, UpdatePassword } = UseLoginContext();
   const { setLoading } = UseLoadingContext();
   const { profileUID } = useParams()
   const { UpdateUser } = useUserContext();
 
   const handleInput = ( event ) => {
     const { id, value } = event.target;
-    setUserInfo( { ...user[0], [id]: value } );
-    console.log( userInfo );
+    setUserInfo( { ...user[0], [id]: value } )
   };
 
   const handleLogOut = async () => {
@@ -44,8 +45,7 @@ function Profile () {
       const userData = await getUser( currUser.uid );
       try {
         if ( !userData.providerImage ) {
-          userData.imgUrl = userData.picture !== undefined && userData.picture !== "" ?
-            await getURL( userData.picture ) : DEFAULT_USER_IMAGE;
+          userData.imgUrl = userData.imgUrl !== undefined && userData.imgUrl !== "" ? userData.imgUrl : DEFAULT_USER_IMAGE;
         }
         else {
           userData.imgUrl = currUser.photoURL;
@@ -53,6 +53,7 @@ function Profile () {
 
         setImage( userData.imgUrl );
         const userArr = [userData];
+        console.log( userArr[0] );
         await setUser( userArr );
         await setUserInfo( userArr[0] );
       }
@@ -65,23 +66,44 @@ function Profile () {
     setLoading( false );
   }, [profileUID] )
 
+  const startChat = async () => {
+    let chatId = await checkChatByUsers( currUser.uid, user[0].uid )
+
+    if ( !chatId ) {
+      chatId = await createChat( currUser.uid, user[0].uid )
+    }
+    navigate( "/chat/" + chatId )
+  }
+
   const handleEdit = () => {
     setEdit( true );
   }
 
   useEffect( () => {
     setLoading( false )
-  }, [user] )
+  }, [] );
 
-  const startChat = async () => {
-    const chatId = await createChat( currUser.uid, user[0].uid )
-    navigate( "/chat/" + chatId )
-  }
+  const handleInputPassword = async ( event ) => {
+    const { id, value } = event.target;
+    setPassword( { ...password, [id]: value } )
+  };
 
-  const handleSave = () => {
+  const handleChangePwd = () => {
+    console.log( "ASdasd" )
+    setChangePassword( true );
+  };
+
+  const handleSave = async () => {
     const data = userInfo;
-    data.URL = image;
-    UpdateUser( currUser.uid, data );
+    UpdateUser( currUser.uid, data, image ).finally( () => { window.location.replace( "/" ) } );
+  };
+
+  const handlePassword = () => {
+    if ( password.newPassword !== password.confirmPassword ) {
+      alert( "bobop" );
+      return;
+    }
+    UpdatePassword( password.currPassword,password.newPassword );
   };
 
   return (
@@ -91,18 +113,28 @@ function Profile () {
           <div className="profile-layout d-flex gap-5 bg-wisteria py-2 px-5 rounded-2">
             <div className="d-flex flex-column align-items-center p-3">
               <img className="rounded-circle user-image object-fit-cover" style={{ width: '150px', height: '150px' }} src={user[0].imgUrl} referrerPolicy='no-referrer' alt="" />
-              <span className="fw-bold fs-4 my-4">{user[0]?.name} {user[0]?.lastName}</span>
+              <span className="fw-bold fs-4 my-4">{user[0]?.name} {user[0]?.lastname}</span>
               <p className="fs-5">{user[0].email}</p>
               <p className="fs-5">{user[0].phone}</p>
             </div>
             <div className="d-flex flex-column align-items-center p-3">
               <img className="rounded-circle" src="https://images.placeholders.dev/?width=150&height=150" alt="" />
               <span className="fw-bold fs-4 my-4">Seguridad</span>
-              {currUser.uid == user[0].uid ?
+              {currUser.uid === user[0].uid ?
                 <>
                   {
-                    currUser.providerId !== undefined && currUser.providerId !== "" && currUser.providerId == DEFAULT_PROVIDER ?
-                      <button className="w-100 shadow text-dark btn btn-thistle">Cambiar Contraseña</button> : <></>
+                    user[0].providerId !== undefined && user[0].providerId !== "" && user[0].providerId === DEFAULT_PROVIDER ?
+                      <>
+                        {!changePassword ?
+                          <button className="w-100 shadow text-dark btn btn-thistle" onClick={handleChangePwd}>Cambiar Contraseña</button> :
+                          <>
+                            <input className="form-control py-2 px-4 rounded mt-3 mb-2" style={styles.loginInput} type="password" name="currPassword" id="currPassword" placeholder="Contraseña Actual" onChange={handleInputPassword} />
+                            <input className="form-control py-2 px-4 rounded mt-3" style={styles.loginInput} type="password" name="newPassword" id="newPassword" placeholder="Nueva Contraseña" onChange={handleInputPassword} />
+                            <input className="form-control py-2 px-4 rounded mt-3" style={styles.loginInput} type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirmar Contraseña" onChange={handleInputPassword} />
+                            <button className="btn btn-primary w-100 mt-4" onClick={handlePassword} >Guardar</button>
+                          </>
+                        }
+                      </> : <></>
                   }
                   <button className="w-100 shadow text-dark btn btn-thistle mt-2" onClick={handleEdit}>Editar Perfil</button>
                   <button className="w-100 shadow text-dark btn btn-thistle mt-2" onClick={handleLogOut} >Cerrar Sesion</button>

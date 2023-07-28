@@ -3,8 +3,13 @@ import { useOutletContext } from 'react-router-dom'
 import './Adopt.css'
 import PetCard from '../../components/app/PetCard/PetCard'
 import Example from '../../components/app/PetCard/Example'
+import { UseLoadingContext } from '../../firebase/hooks/UseLoading'
 
 function Adopt() {
+  const {loading,setLoading} = UseLoadingContext();
+  useEffect(()=>{
+    setLoading(false);
+  },[])
   const petList = [
     {
       id: 1,
