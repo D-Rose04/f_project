@@ -1,9 +1,9 @@
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../config/config-firebase";
 
-const USERS_COLLECTION='users'
+const USERS_COLLECTION = 'users'
 
-export async function addUser(uid, name, lastname, phone, picture) {
+export async function addUser ( uid, name, lastname, phone, picture, providerId, providerImage ) {
     const data = {
         uid,
         name,
@@ -14,7 +14,9 @@ export async function addUser(uid, name, lastname, phone, picture) {
         location: null,
         country: null,
         favoritePets: [],
-        notifications: []
+        notifications: [],
+        providerId,
+        providerImage
     }
-    await addDoc(collection(db, USERS_COLLECTION), data)
+    await addDoc( collection( db, USERS_COLLECTION ), data )
 }

@@ -15,7 +15,7 @@ import { UseLoadingContext } from './firebase/hooks/UseLoading';
 export default function App () {
   const { currUser } = UseLoginContext();
   const { loading, setLoading } = UseLoadingContext();
-  
+
   useEffect( () => {
     setTimeout( () => {
       setLoading( false );
