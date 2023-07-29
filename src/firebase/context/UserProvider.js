@@ -17,13 +17,9 @@ export default function UserProvider ( { children } ) {
             .then( ( s ) => getDownloadURL(s.ref) );
     }
 
-    async function deleteImage ( uid ) {
-        deleteObject( ref( storage, `${PROFILE_FOLDER}/${uid}.jpg` ) );
-    }
-
-    async function UpdateUser ( uid, data, url ) {
+    async function UpdateUser ( uid, data, url, imageChanged ) {
         const userRef = doc( db, USER_COLLECTION, uid );
-        if ( url !== "" ) {
+        if ( url !== "" && imageChanged) {
             const newimage = await uploadProfilePicture( url, uid )
             data.imgUrl = newimage;
             data.providerImage = false;
@@ -32,7 +28,8 @@ export default function UserProvider ( { children } ) {
     }
 
     const value = {
-        UpdateUser
+        UpdateUser,
+        uploadProfilePicture
     };
 
     return (

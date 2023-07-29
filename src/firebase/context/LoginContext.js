@@ -93,12 +93,12 @@ export function LoginProvider ( { children } ) {
 
     async function UpdatePassword ( oldPassword, newPwd ) {
         try {
-
-            signInWithEmailAndPassword( auth.currentUser.email, oldPassword )
-                .then( () => updatePassword( auth.currentUser, newPwd ) );
+            SignIn( auth.currentUser.email, oldPassword )
+                .then( ( credential ) =>
+                    updatePassword( credential.user, newPwd ) );
         }
         catch ( ex ) {
-
+               
         }
 
     }

@@ -15,6 +15,7 @@ function Profile () {
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState();
   const [image, setImage] = useState( "" );
+  const [imageChanged, setImageChanged] = useState( false);
   const [user, setUser] = useState( [{}] )
   const [edit, setEdit] = useState( false );
   const [changePassword, setChangePassword] = useState( false );
@@ -83,6 +84,12 @@ function Profile () {
     setLoading( false )
   }, [] );
 
+  const onImageChange =  (image)=>{
+    setImageChanged(true);
+    setImage(image);
+    
+  };
+
   const handleInputPassword = async ( event ) => {
     const { id, value } = event.target;
     setPassword( { ...password, [id]: value } )
@@ -95,15 +102,16 @@ function Profile () {
 
   const handleSave = async () => {
     const data = userInfo;
-    UpdateUser( currUser.uid, data, image ).finally( () => { window.location.replace( "/" ) } );
+    UpdateUser( currUser.uid, data, image, imageChanged ).finally( () => { window.location.replace( "/" ) } );
   };
 
-  const handlePassword = () => {
+  const handlePassword = async () => {
     if ( password.newPassword !== password.confirmPassword ) {
       alert( "bobop" );
       return;
     }
-    UpdatePassword( password.currPassword,password.newPassword );
+    UpdatePassword( password.currPassword, password.newPassword )
+      .then( () => navigate( '/' ) );
   };
 
   return (
@@ -160,7 +168,7 @@ function Profile () {
             </div>
 
             <div className="col bg-indigo p-5 rounded-end-3">
-              <ImagePicker controlId="inputImg" width="300" name="image" title="Selecciona una imagen" defaultImage={image} onImageSet={( image ) => setImage( image )} />
+              <ImagePicker controlId="inputImg" width="300" name="image" title="Selecciona una imagen" defaultImage={image} onImageSet={( image ) => onImageChange( image )} />
             </div>
           </div>
         </div>

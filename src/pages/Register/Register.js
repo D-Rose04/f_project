@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import ReactInputMask from 'react-input-mask'
 import ImagePicker from '../../components/layout/ImagePicker/ImagePicker'
 import { useNavigate } from 'react-router-dom'
-import { uploadProfilePicture } from '../../firebase/context/StorageContext'
+// import { uploadProfilePicture } from '../../firebase/context/StorageContext'
 import { UseLoginContext } from '../../firebase/hooks/UseLogin'
 
 import { FaGoogle } from 'react-icons/fa'
@@ -13,6 +13,7 @@ import { addUser, checkEmail } from '../../firebase/context/Database/UserContext
 import { createUserChat } from '../../firebase/context/Database/ChatContext'
 import { Toast, ToastContainer } from 'react-bootstrap'
 import { DEFAULT_PROVIDER } from '../../utils/constants'
+import { useUserContext } from '../../firebase/hooks/UseUser'
 
 
 function Register () {
@@ -29,6 +30,7 @@ function Register () {
     const [toastData, setToastData] = useState( [] )
     const [showToast, setShowToast] = useState( false )
     const { setLoading } = UseLoadingContext();
+    const { uploadProfilePicture } = useUserContext();
     const authContext = UseLoginContext();
     const navigate = useNavigate()
 
@@ -72,7 +74,7 @@ function Register () {
             const userData = await authContext.SignUp( email, password )
             const uid = userData.user.uid
             const bucket = await uploadProfilePicture( image, uid )
-            await addUser( uid, email, name, lastName, phone, bucket, DEFAULT_PROVIDER, false )
+            await addUser( uid, email, name, lastName, phone, await bucket, DEFAULT_PROVIDER, false )
             await createUserChat( uid )
             await authContext.SignOut()
             navigate( '/login' )
