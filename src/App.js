@@ -15,6 +15,8 @@ import MyPets from './pages/MyPets/MyPets';
 import LostPets from './pages/LostPets/LostPets';
 import Chat from './pages/Chat/Chat';
 import ChatDetails from './pages/Chat/ChatDetails/ChatDetails';
+import AddPost from './pages/Social/CRUD/AddPost/AddPost';
+
 
 export default function App () {
   const { currUser } = UseLoginContext();
@@ -46,8 +48,9 @@ export default function App () {
                   <Route path="/my-pets" element={<MyPets />} />,
                   <Route path="/lost-pets" element={<LostPets />} />,
                   <Route path="/chat" element={<Chat />} />,
-                  <Route path="/chat/:chatId" element={<ChatDetails />} />,
+                  <Route path="/chat/:chatId" element={<ChatDetails />}/>,
                   <Route path="/social" element={<Social />} />,
+                  <Route path='/social/add-post' element={<AddPost/>} />,
                   <Route path="/profile" element={<Profile />} />,
                 ]} />
                 : <Route path='/' element={<Landing />} />

@@ -13,6 +13,7 @@ import LostPets from "./pages/LostPets/LostPets";
 import AddLostPet from "./pages/LostPets/AddLostPet/AddLostPet";
 import LostPetDetails from "./pages/LostPets/LostPetDetails/LostPetDetails";
 import LostPetFound from "./pages/LostPets/LostPetFound/LostPetFound";
+import AddPost from "./pages/Social/CRUD/AddPost/AddPost";
 
 const router = createBrowserRouter([
     {
@@ -56,7 +57,13 @@ const router = createBrowserRouter([
             },
             {
                 path: "/social",
-                element: <Social />
+                element: <Social />,
+                children: [
+                    {
+                        path:  'add-post',
+                        element: <AddPost/>
+                    }
+                ]
             },
             {
                 path: "/profile",
