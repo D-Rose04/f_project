@@ -1,48 +1,85 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Card } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Button, Card, Dropdown } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
 import { usePopper } from 'react-popper';
+import { getURL } from '../../../firebase/context/StorageContext';
+import { CiCircleMore } from 'react-icons/ci'
+import { UseLoginContext } from '../../../firebase/hooks/UseLogin';
+import { addFav, deletePet, removeFav } from '../../../firebase/context/Database/PetsContext';
 
-function PetCard({ id, image, name, race, age, location, vacuna = false }) {
-    const [favorite, setFavorite] = useState(false)
+function PetCard({ children, pet, isFavorite }) {
+    const {
+        id,
+        uid,
+        image,
+        animal,
+        name,
+        race,
+        sex,
+        age,
+        timeUnit,
+        province,
+        municipality,
+        deleted
+    } = pet
+
+    const [favorite, setFavorite] = useState(isFavorite)
+    const [imageUrl, setImageUrl] = useState("")
     const favImage = require(favorite ? "./../../../img/icons/heart-fill.png" : "./../../../img/icons/heart-empty.png");
+    const { currUser } = UseLoginContext()
 
-    const [cant, ud] = age;
-    let time = cant
-    switch (ud) {
-        case 'w': time += cant > 1 ? ' semanas' : ' semana'; break;
-        case 'm': time += cant > 1 ? ' meses' : ' mes'; break;
-        case 'y': time += cant > 1 ? ' años' : ' año'; break;
+    let time = age
+    switch (timeUnit) {
+        case 'w': time += age > 1 ? ' semanas' : ' semana'; break;
+        case 'm': time += age > 1 ? ' meses' : ' mes'; break;
+        case 'y': time += age > 1 ? ' años' : ' año'; break;
     }
 
-    useEffect(()=>{
-console.log(id)
-    },[])
+    async function toggleFavorite() {
+        if (favorite) {
+            await removeFav(currUser.uid, id)
+        } else {
+            await addFav(currUser.uid, id)
+        }
+
+        setFavorite(!favorite)
+    }
+
+    useEffect(() => {
+        async function loadImg() {
+            setImageUrl(await getURL(image))
+        }
+
+        loadImg()
+        console.log(id)
+    }, [])
 
     return (
         <div className="col">
-            <Card>
-                <Link to={''+id}><Card.Img variant="top" src={image} /></Link>
-
-
+            <Card bg={deleted ? 'secondary' : null}>
+                <Link to={'' + id}><Card.Img className='object-fit-cover' variant="top" height={180} src={imageUrl} /></Link>
                 <Card.Body>
                     <div className='d-flex justify-content-between'>
-                        <Link to={''+id}><Card.Title>{name}</Card.Title></Link>
-                        <a href="#" className='align-self-end'>
-                            <img width="28" src={favImage} alt=""
-                                className="img-fluid" onClick={() => setFavorite(!favorite)} />
-                        </a>
+                        <Link to={'' + id}><Card.Title style={{ fontSize: '18px' }}>{name}</Card.Title></Link>
+                        {currUser.uid !== uid ?
+                            <img
+                                width="28"
+                                src={favImage} alt=""
+                                className="img-fluid align-self-end"
+                                onClick={toggleFavorite}
+                                style={{ cursor: 'pointer' }} /> :
+                            null}
                     </div>
                     <Card.Text className='d-flex flex-column mb-1' style={{ color: 'black' }}>
-                        <span style={{ color: 'black' }}>{race}</span>
-                        <span style={{ color: 'black' }}>{time}</span>
-                        <span style={{ color: 'black' }}>{vacuna ? 'Vacunado' : 'No vacunado'}</span>
+                        <span style={{ color: 'black', fontSize: '14px' }}>{animal}, {race}</span>
+                        <span style={{ color: 'black', fontSize: '14px' }}>{sex}</span>
+                        <span style={{ color: 'black', fontSize: '14px' }}>{time}</span>
                     </Card.Text>
 
                 </Card.Body>
                 <Card.Footer className='d-flex justify-content-between'>
-                    <span className='text-dark'>{location}</span>
-                    <a href='#'><img src={require('../../../img/icons/more.png')} className='img-fluid' width={15} /></a>
+                    <span className='text-dark' style={{ fontSize: '15px' }}>{province}</span>
+                    {children}
                 </Card.Footer>
             </Card>
 

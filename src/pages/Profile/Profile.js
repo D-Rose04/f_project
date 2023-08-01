@@ -38,10 +38,6 @@ function Profile() {
     loadData()
   }, [profileUID])
 
-  useEffect(() => {
-    setLoading(false)
-  }, [user])
-
   const startChat = async () => {
     let chatId = await checkChatByUsers(currUser.uid, user[0].uid)
 

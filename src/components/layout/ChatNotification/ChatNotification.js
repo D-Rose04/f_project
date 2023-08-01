@@ -68,7 +68,7 @@ function ChatNotification({ image, count, href }) {
 
     return (
         <Link className="position-relative ms-3" to={href} >
-            <img width="30" className="rounded-circle img-fluid"
+            <img width="25" className="rounded-circle img-fluid"
                 src={img} alt="" />
             {notSeen ? <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-thistle">{notSeen}</span> : null}
         </Link>

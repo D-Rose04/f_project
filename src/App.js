@@ -15,16 +15,20 @@ import MyPets from './pages/MyPets/MyPets';
 import LostPets from './pages/LostPets/LostPets';
 import Chat from './pages/Chat/Chat';
 import ChatDetails from './pages/Chat/ChatDetails/ChatDetails';
+import AddPet from './pages/MyPets/AddPet/AddPet';
+import EditPet from './pages/MyPets/EditPet/EditPet';
+import Favorites from './pages/MyPets/Favorites/Favorites';
+import Lost from './pages/MyPets/Lost/Lost'
 
-export default function App () {
+export default function App() {
   const { currUser } = UseLoginContext();
   const { loading, setLoading } = UseLoadingContext();
-  
-  useEffect( () => {
-    setTimeout( () => {
-      setLoading( false );
-    }, 1500 );
-  }, [] );
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+  }, []);
 
   return (
     <>
@@ -43,7 +47,12 @@ export default function App () {
               currUser && currUser.uid ?
                 <Route path="/" element={<MainLayout />} children={[
                   <Route path="/" element={<Adopt />} />,
-                  <Route path="/my-pets" element={<MyPets />} />,
+                  <Route path="/my-pets" element={<MyPets />} children={[
+                    <Route path='add-pet' element={<AddPet />} />,
+                    <Route path='edit-pet/:petId' element={<EditPet />} />,
+                  ]} />,
+                  <Route path='/my-pets/favorites' element={<Favorites />} />,
+                  <Route path='/my-pets/lost-pets' element={<Lost />} />,
                   <Route path="/lost-pets" element={<LostPets />} />,
                   <Route path="/chat" element={<Chat />} />,
                   <Route path="/chat/:chatId" element={<ChatDetails />} />,

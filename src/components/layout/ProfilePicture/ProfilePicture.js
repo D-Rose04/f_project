@@ -27,10 +27,9 @@ function ProfilePicture({ pictureImg, profileUrl }) {
                 e.preventDefault();
                 onClick(e);
             }}
-            width={60}
-            height={60}
+            width={50}
             src={pictureImg}
-            style={{ height: "60px", maxHeight: "60px", cursor: 'pointer' }}
+            style={{ height: "50px", maxHeight: "50px", cursor: 'pointer' }}
         />
     ));
     return (
