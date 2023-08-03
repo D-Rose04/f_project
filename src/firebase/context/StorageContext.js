@@ -5,6 +5,7 @@ const BUCKET_URL = process.env.REACT_APP_FIREBASE_STORAGE_BUCKET
 const PROFILE_FOLDER='profile_pics'
 const MESSAGES_MULTIMEDIA_FOLDER='messages_img'
 const PETS_FOLDER='pets_img'
+const LOST_PETS_FOLDER='lost_pets_img'
 // Uploads image and returns the storage bucket
 // export async function uploadImage(image, uid) {
 //     const formattedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -29,6 +30,13 @@ export async function uploadMessagePicture(image, chatId, uid, time){
 
 export async function uploadPetPicture(image, uid, petId){
     const bucket = `${BUCKET_URL}/${PETS_FOLDER}/${uid}/${petId}.jpg`;
+    const storageRef=ref(storage, bucket)
+    await uploadBytes(storageRef, image)
+    return bucket
+}
+
+export async function uploadLostPetPicture(image, uid, petId){
+    const bucket = `${BUCKET_URL}/${LOST_PETS_FOLDER}/${uid}/${petId}.jpg`;
     const storageRef=ref(storage, bucket)
     await uploadBytes(storageRef, image)
     return bucket

@@ -1,15 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Button, Form, InputGroup, Modal, Toast, ToastContainer } from 'react-bootstrap';
-import ImagePicker from '../../../components/layout/ImagePicker/ImagePicker';
-import { useNavigate } from 'react-router-dom';
-import styles from './AddPet.styles'
-import { RazasGato, RazasPerro } from '../../../firebase/hooks/CommonHooks';
-import { addPet } from '../../../firebase/context/Database/PetsContext';
+import ImagePicker from '../../../../components/layout/ImagePicker/ImagePicker';
+import { useNavigate, useParams } from 'react-router-dom';
+import styles from './EditLost.styles'
+import { RazasGato, RazasPerro } from '../../../../firebase/hooks/CommonHooks';
+import { addPet, editPet, getLostPet, getPet } from '../../../../firebase/context/Database/PetsContext';
 import UseAnimations from 'react-useanimations'
-import loading from 'react-useanimations/lib/loading'
-import { UseLoginContext } from '../../../firebase/hooks/UseLogin';
+import loadingIcon from 'react-useanimations/lib/loading'
+import { UseLoginContext } from '../../../../firebase/hooks/UseLogin';
+import { getURL, uploadPetPicture } from '../../../../firebase/context/StorageContext';
+import { uploadLostPetPicture } from '../../../../firebase/context/StorageContext';
+import { editLostPet } from '../../../../firebase/context/Database/PetsContext';
 
-function AddPet() {
+function EditLost() {
     const [petData, setPetData] = useState({})
     const [razas, setRazas] = useState([])
     const [provinces, setProvinces] = useState([])
@@ -17,80 +20,92 @@ function AddPet() {
     const [showToast, setShowToast] = useState(false)
     const [toastData, setToastData] = useState([])
     const [sending, setSending] = useState(false)
+    const [loading, setLoading] = useState(true)
 
-    const timeUnitRef = useRef()
+    const { petId } = useParams()
 
     const navigate = useNavigate();
     const { currUser } = UseLoginContext()
 
     const toBack = () => navigate('..');
+    let setImage
 
     function handleInput(e) {
         const { id, value } = e.target
         setPetData({ ...petData, [id]: value })
     }
 
-    function handleCheck(e) {
-        const { id, checked } = e.target
-        const data = { ...petData }
-
-        if (!data.additionalDetails)
-            data.additionalDetails = []
-
-        if (checked)
-            data.additionalDetails.push(id)
-        else {
-            const i = data.additionalDetails.indexOf(id)
-            data.additionalDetails.splice(i, 1)
+    async function handleSubmit(e) {
+        if (e) {
+            e.preventDefault()
         }
-        setPetData(data)
-    }
 
-    async function handleSubmit() {
-        petData.timeUnit ??= timeUnitRef.current.value
-        petData.additionalDetails ??= []
-        petData.description ??= ""
+        const { image, animal, race, sex, name, size, description, province, municipality, exactLocation } = petData
+        let { imageBucket } = petData
 
-        const { image, animal, race, sex, name, age, timeUnit, size, description, province, municipality, additionalDetails } = petData
-
-        if (!animal || !race || !sex || !name || !age || !timeUnit || !size || !province || !municipality || !additionalDetails) {
+        if (!animal || !race || !sex || !name || !description || !size || !province || !municipality || !exactLocation) {
             setToastData(['Campos vacios', 'Debes rellenar todos los campos', 'danger'])
             setShowToast(true)
             return
         }
 
-        if (!image) {
-            setToastData(['Sin imagen', 'Debes seleccionar una imagen de perfil', 'danger'])
-            setShowToast(true)
-            return
-        }
-
         setSending(true)
-        const petResponse = await addPet(currUser.uid, image, animal, name, race, sex, age, timeUnit, size, description, province, municipality, additionalDetails)
+        if (image) {
+            //si hay una imagen es que el usuario cambio la imagen
+            imageBucket = await uploadLostPetPicture(image, currUser.uid, petId)
+        }
 
-        if (petResponse?.message == "add-pet-error") {
+        const petResponse = await editLostPet(petId, imageBucket, animal, name, race, sex, size, description, province, municipality, exactLocation)
+
+        if (!petResponse) {
             setToastData(['Error', 'Error al guardar la mascota', 'danger'])
             setShowToast(true)
+            setSending(false)
             return
         }
 
-        if (petResponse?.message == "upload-img-error") {
-            setToastData(['Error', 'Error al subir la imagen', 'danger'])
-            setShowToast(true)
-            return
-        }
-
-        if (petResponse?.message == "set-img-error") {
-            setToastData(['Error', 'Error al guardar la mascota', 'danger'])
-            setShowToast(true)
-            return
-        }
-
-        setToastData(['Mascota guardada', 'Mascota guardada con exito', 'success'])
+        setToastData(['Mascota guardada', 'Su mascota ha sido modificada', 'success'])
         setShowToast(true)
         navigate("..")
         setSending(false)
     }
+
+    useEffect(() => {
+        async function loadPetData() {
+            const pet = await getLostPet(petId)
+
+            if (pet == null) {
+                setToastData(['Mascota no encontrada', 'No se ha encontrado la mascota solicitada', 'warning'])
+                setShowToast(true)
+                navigate("..")
+                return
+            }
+
+            const provRes = await fetch("https://api.digital.gob.do/v1/territories/provinces")
+            const provData = await provRes.json()
+            setProvinces(provData.data)
+
+            const provCode = provData.data.find(prov => prov.name == pet.province).code
+            const munRes = await fetch("https://api.digital.gob.do/v1/territories/municipalities?provinceCode=" + provCode)
+            const munData = await munRes.json()
+            const data = munData.data
+
+            if (typeof data === 'object' && data !== null) {
+                setMunicipalities(Array.isArray(data) ? munData.data : [munData.data])
+            } else {
+                console.log('La variable no es un array ni un objeto.');
+            }
+
+            setImage(await getURL(pet.image))
+
+            setPetData({ ...pet, imageBucket: pet.image, image: null })
+            setLoading(false)
+        }
+
+        if (petId) {
+            loadPetData()
+        }
+    }, [petId])
 
     useEffect(() => {
         async function loadProvinces() {
@@ -156,14 +171,17 @@ function AddPet() {
                 aria-labelledby="example-custom-modal-styling-title">
                 <Modal.Header className='bg-indigo' closeButton>
                     <Modal.Title className='text-white'>
-                        Agregar Mascota
+                        Editar Mascota Perdida
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='bg-indigo px-5'>
-                    <form>
-                        <ImagePicker className="mb-3" title="Seleccionar Imagen" name="image" controlId={"imgPickInput"} onImageSet={(img) => setPetData({ ...petData, image: img })} />
+                    <div className={loading ? 'd-flex justify-content-center' : 'd-none'}>
+                        <UseAnimations size={120} animation={loadingIcon} strokeColor='white' />
+                    </div>
+                    <form onSubmit={handleSubmit} className={loading ? 'd-none' : ''}>
+                        <ImagePicker className="mb-3" title="Seleccionar Imagen" name="image" controlId={"imgPickInput"} onImageSet={(img) => setPetData({ ...petData, image: img })} loadImage={(fncSetImg) => setImage = fncSetImg} />
                         <div className="mb-3">
-                            <select className="form-select" id='animal' aria-label="Default select example" onChange={handleInput}>
+                            <select className="form-select" id='animal' aria-label="Default select example" onChange={handleInput} value={petData?.animal}>
                                 <option value={""}>Animal...</option>
                                 <option value="Perro">Perro</option>
                                 <option value="Gato">Gato</option>
@@ -172,7 +190,7 @@ function AddPet() {
                         </div>
 
                         <div className="mb-3">
-                            <select disabled={petData?.animal == "Otro"} className="form-select" id='race' onChange={handleInput}>
+                            <select disabled={petData?.animal == "Otro"} className="form-select" id='race' onChange={handleInput} value={petData?.race}>
                                 <option value={""} selected>Raza...</option>
                                 {razas.map((r, i) => <option key={i} value={r}>{r}</option>)}
                                 <option value="Otra">Otra (favor especificar en la descripcion)</option>
@@ -180,27 +198,17 @@ function AddPet() {
                         </div>
 
                         <div className="mb-3">
-                            <select className="form-select" id='sex' aria-label="Default select example" onChange={handleInput}>
+                            <select className="form-select" id='sex' aria-label="Default select example" onChange={handleInput} value={petData?.sex}>
                                 <option value={""}>Sexo...</option>
                                 <option value="Macho">Macho</option>
                                 <option value="Hembra">Hembra</option>
                             </select>
                         </div>
                         <div className="mb-3">
-                            <input type="text" id='name' className="form-control" style={styles.customInput} placeholder='Nombre' onInput={handleInput} />
+                            <input type="text" id='name' className="form-control" style={styles.customInput} placeholder='Nombre' onInput={handleInput} value={petData?.name} />
                         </div>
                         <div className="mb-3">
-                            <InputGroup>
-                                <input type="number" id='age' className="form-control" style={styles.customInput} placeholder='Edad' onInput={handleInput} />
-                                <select className="form-select" id='timeUnit' aria-label="Default select example" onChange={handleInput} ref={timeUnitRef}>
-                                    <option value="y">Años</option>
-                                    <option value="m">Meses</option>
-                                    <option value="w">Semanas</option>
-                                </select>
-                            </InputGroup>
-                        </div>
-                        <div className="mb-3">
-                            <select className="form-select" id='size' aria-label="Default select example" onChange={handleInput}>
+                            <select className="form-select" id='size' aria-label="Default select example" onChange={handleInput} value={petData?.size}>
                                 <option value={""}>Tamaño...</option>
                                 <option value="Pequeño">Pequeño</option>
                                 <option value="Mediano">Mediano</option>
@@ -208,30 +216,28 @@ function AddPet() {
                             </select>
                         </div>
                         <div className="mb-3">
-                            <textarea className="form-control" id='description' style={styles.customInput} onChange={handleInput} placeholder='Descripcion (opcional)'></textarea>
+                            <textarea className="form-control" id='description' style={styles.customInput} onChange={handleInput} value={petData?.description} placeholder='Descripcion'></textarea>
                         </div>
                         <div className="mb-3">
-                            <select className="form-select" id='province' aria-label="Default select example" onChange={handleInput}>
+                            <select className="form-select" id='province' aria-label="Default select example" onChange={handleInput} value={petData?.province}>
                                 <option value={""}>Provincia...</option>
                                 {provinces.map(prov => <option value={prov.name}>{prov.name}</option>)}
                             </select>
                         </div>
                         <div className="mb-3">
-                            <select className="form-select" id='municipality' aria-label="Default select example" onChange={handleInput}>
+                            <select className="form-select" id='municipality' aria-label="Default select example" onChange={handleInput} value={petData?.municipality}>
                                 <option value={""}>Municipio...</option>
                                 {municipalities.map(mun => <option value={mun.name}>{mun.name}</option>)}
                             </select>
                         </div>
                         <div className="mb-3">
-                            <h5 className='text-white'>Datos adicionales</h5>
-                            <label className='d-block text-white'><input className="form-check-input" type="checkbox" id="Vacunado" onChange={handleCheck} /> Vacunado</label>
-                            <label className='d-block text-white'><input className="form-check-input" type="checkbox" id="Desparasitado" onChange={handleCheck} /> Desparasitado</label>
-                            <label className='d-block text-white'><input className="form-check-input" type="checkbox" id="Castrado" onChange={handleCheck} /> Castrado</label>
+                            <textarea className="form-control" id='exactLocation' style={styles.customInput} onChange={handleInput} value={petData?.exactLocation} placeholder='Indique exactamente el ultimo lugar y direccion donde fue vista su mascota'></textarea>
                         </div>
+                        <input type='submit' className='d-none' />
                     </form>
                 </Modal.Body>
                 <Modal.Footer className='bg-indigo'>
-                    <Button className='d-flex justify-content-between' onClick={handleSubmit} disabled={sending}>{sending ? <UseAnimations animation={loading} strokeColor='white' /> : null} Agregar</Button>
+                    <Button className='d-flex justify-content-between' onClick={handleSubmit} disabled={sending}>{sending ? <UseAnimations animation={loadingIcon} strokeColor='white' /> : null} Guardar</Button>
                     <Button onClick={toBack} variant='danger'>Cancelar</Button>
                 </Modal.Footer>
             </Modal>
@@ -239,4 +245,4 @@ function AddPet() {
     )
 }
 
-export default AddPet
+export default EditLost

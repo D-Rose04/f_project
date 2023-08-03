@@ -10,33 +10,48 @@ import { getUserByUID } from '../firebase/context/Database/UserContext'
 import { getURL } from '../firebase/context/StorageContext'
 import ChatNotification from '../components/layout/ChatNotification/ChatNotification'
 import { Dropdown } from 'react-bootstrap'
+import { DEFAULT_USER_IMAGE } from '../utils/constants'
 
-function MainLayout() {
-  const [title, setTitle] = useState("Titulo")
+function MainLayout () {
+  const [title, setTitle] = useState( "Titulo" )
   const [sidebar, setSidebar] = useState()
   const [sidebarCols, setSidebarCols] = useState(2)
   const [sidebarWidth, setSidebarWidth] = useState()
   const [user, setUser] = useState([{}])
-
+  
   const { loading, setLoading } = UseLoadingContext()
-  const { currUser } = UseLoginContext()
+  const { currUser,getUser } = UseLoginContext()
   const location = useLocation()
 
   const layoutRowRef = useRef()
   const layoutContentRef = useRef()
-  const sidebarRef = useRef(null)
-  const sidebarContentRef = useRef(null)
+  const sidebarRef = useRef( null )
+  const sidebarContentRef = useRef( null )
 
-  useEffect(() => {
+  useEffect( () => {
+    setLoading(true);
     const loadUser = async () => {
-      const userData = await getUserByUID(currUser.uid)
-      userData.imgUrl = await getURL(userData.picture)
-      const userArr = [userData]
-      setUser(userArr)
-    }
+      const userData = await getUser( currUser.uid )
+      try {
+        if (!userData.providerImage ) {
+          userData.imgUrl = userData.imgUrl !== undefined && userData.imgUrl !== "" ? userData.imgUrl : DEFAULT_USER_IMAGE;
+        }
+        else {
+          userData.imgUrl = currUser.photoURL;
+        }
 
-    loadUser()
-  }, [])
+        const userArr = [userData];
+        setUser( userArr );
+      }
+      catch ( Exception ) {
+        console.log( Exception );
+      }
+    }
+    loadUser();
+    setLoading(false);
+  }, [] )
+
+  useEffect( () => setSidebarWidth( sidebarRef.current.offsetWidth ), [sidebarCols] )
 
   useEffect(() => setSidebarWidth(sidebarRef.current.offsetWidth), [sidebarCols])
 

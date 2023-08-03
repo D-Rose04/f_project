@@ -19,6 +19,10 @@ import AddPet from './pages/MyPets/AddPet/AddPet';
 import EditPet from './pages/MyPets/EditPet/EditPet';
 import Favorites from './pages/MyPets/Favorites/Favorites';
 import Lost from './pages/MyPets/Lost/Lost'
+import AddLost from './pages/MyPets/Lost/AddLost/AddLost';
+import EditLost from './pages/MyPets/Lost/EditLost/EditLost';
+import PetDetails from './pages/Adopt/PetDetails/PetDetails';
+import AdoptPet from './pages/Adopt/AdoptPet/AdoptPet';
 
 export default function App() {
   const { currUser } = UseLoginContext();
@@ -47,12 +51,19 @@ export default function App() {
               currUser && currUser.uid ?
                 <Route path="/" element={<MainLayout />} children={[
                   <Route path="/" element={<Adopt />} />,
+                  <Route path="/:petId" element={<PetDetails />} children={[
+                    <Route path='adopt' element={<AdoptPet />} />,
+                  ]} />,
+                  // <Route path="/adopt-pet/:petId" element={<PetDetails />} />,
                   <Route path="/my-pets" element={<MyPets />} children={[
                     <Route path='add-pet' element={<AddPet />} />,
                     <Route path='edit-pet/:petId' element={<EditPet />} />,
                   ]} />,
                   <Route path='/my-pets/favorites' element={<Favorites />} />,
-                  <Route path='/my-pets/lost-pets' element={<Lost />} />,
+                  <Route path='/my-pets/lost-pets' element={<Lost />} children={[
+                    <Route path='add-pet' element={<AddLost />} />,
+                    <Route path='edit/:petId' element={<EditLost />} />,
+                  ]} />,
                   <Route path="/lost-pets" element={<LostPets />} />,
                   <Route path="/chat" element={<Chat />} />,
                   <Route path="/chat/:chatId" element={<ChatDetails />} />,

@@ -5,70 +5,75 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FaGoogle } from 'react-icons/fa';
 import { UseLoadingContext } from '../../firebase/hooks/UseLoading';
 import { Toast, ToastContainer } from 'react-bootstrap';
+import { INCORRECT_PASSWORD_CODE, USER_NOT_FOUND } from '../../utils/constants';
 
-function Login() {
-  const [user, setUser] = useState({ txtEmail: '', txtPass: '' });
-  const [showToast, setShowToast] = useState(false)
-  const [toastData, setToastData] = useState([])
+function Login () {
+  const [user, setUser] = useState( { txtEmail: '', txtPass: '' } );
+  const [showToast, setShowToast] = useState( false )
+  const [toastData, setToastData] = useState( [] )
 
   const { SignIn, SignInWithGoogle } = UseLoginContext();
   const { setLoading } = UseLoadingContext();
 
   const navigate = useNavigate();
 
-  const handleInput = (event) => {
+  const handleInput = ( event ) => {
     const { id, value } = event.target;
-    setUser({ ...user, [id]: value });
+    setUser( { ...user, [id]: value } );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = ( e ) => {
     e.preventDefault()
     handleSignIn()
   }
 
   const handleSignIn = async () => {
-    SignIn(user.txtEmail, user.txtPass)
-      .then(response => {
-        navigate("/")
-      })
-      .catch(error => {
-        console.log(error)
-        switch (error.code) {
-          case "auth/wrong-password":
-            setToastData(['Datos erroneos', 'Email y/o contraseña incorrecta', 'danger'])
-            setShowToast(true)
+    SignIn( user.txtEmail, user.txtPass )
+      .then( response => {
+        navigate( "/" )
+      } )
+      .catch( error => {
+        switch ( error.code ) {
+          case INCORRECT_PASSWORD_CODE:
+            setToastData( ['Datos erroneos', 'Email y/o contraseña incorrecta', 'warning'] )
+            setShowToast( true )
+            break;
+
+          case USER_NOT_FOUND:
+            setToastData( ['Datos erroneos', 'Usuario no encontrado', 'warning'] )
+            setShowToast( true )
             break;
 
           default:
-            setToastData(['Error', 'Se ha producido un error inesperado, intentelo de nuevo mas tarde', 'danger'])
-            setShowToast(true)
+            setToastData( ['Error', 'Se ha producido un error inesperado, intentelo de nuevo mas tarde', 'danger'] )
+            setShowToast( true )
             break;
         }
-      });
+      } );
   }
 
   const handleSignInWithGoogle = async () => {
-    setLoading(true);
+    setLoading( true );
     SignInWithGoogle()
-      .then((response) => {
+      .then( ( response ) => {
         //averiguar si el usuario es nuevo o no y a partir de ahi mandarlo a terminar el registro o al inicio
-        setTimeout(() => {
-          setLoading(false);
-        }, 1500);
-      })
-      .finally(() => {
-        setLoading(false)
-        navigate("/")
-      });
+        setTimeout( () => {
+          setLoading( false );
+        }, 1500 );
+      } )
+      .finally( () => {
+        setLoading( false )
+        navigate( "/" )
+      } );
   }
   return (
     <>
-    <ToastContainer
+      <ToastContainer
         className="p-3"
         position={'top-end'}
         style={{ zIndex: 1 }}
       >
-        <Toast show={showToast} bg={toastData[2]} onClose={() => setShowToast(false)} delay={5000} autohide>
+        <Toast show={showToast} bg={toastData[2]} onClose={() => setShowToast( false )} delay={5000} autohide>
           <Toast.Body>
             <h5 className='text-white'>{toastData[0]}</h5>
             <p className='text-white'>{toastData[1]}</p>
@@ -77,7 +82,7 @@ function Login() {
       </ToastContainer>
       <div className="position-absolute top-50 start-50 translate-middle row">
         <div className="col bg-indigo p-5 rounded-start-3">
-          <img className="img-fluid rounded-circle" width={360} src={require("../../img/logo.png")} alt="" />
+          <img className="img-fluid rounded-circle" width={360} src={require( "../../img/logo.png" )} alt="" />
           <h3 className="fw-bold text-white mt-2 text-center">Bienvenido a Happy Feets</h3>
         </div>
         <div className="col bg-gray rounded-end-3 p-5">

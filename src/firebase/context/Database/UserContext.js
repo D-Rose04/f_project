@@ -18,19 +18,21 @@ export async function getUserByUID(uid) {
     return userSnap.exists() ? userSnap.data() : null
 }
 
-export async function addUser(uid, email, name, lastName, phone, picture) {
+export async function addUser(uid, email, name, lastname, phone, imgUrl, providerId, providerImage) {
     const data = {
         uid,
         email,
         name,
-        lastName,
+        lastname,
         phone,
-        picture,
+        imgUrl,
         active: false,
         location: null,
         country: null,
         favoritePets: [],
-        notifications: []
+        notifications: [],
+        providerId,
+        providerImage
     }
 
     const userRef = doc(db, USERS_COLLECTION, uid)

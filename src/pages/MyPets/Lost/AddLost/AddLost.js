@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Form, InputGroup, Modal, Toast, ToastContainer } from 'react-bootstrap';
-import ImagePicker from '../../../components/layout/ImagePicker/ImagePicker';
+import { Button, InputGroup, Modal, Toast, ToastContainer } from 'react-bootstrap';
+import ImagePicker from '../../../../components/layout/ImagePicker/ImagePicker';
 import { useNavigate } from 'react-router-dom';
-import styles from './AddPet.styles'
-import { RazasGato, RazasPerro } from '../../../firebase/hooks/CommonHooks';
-import { addPet } from '../../../firebase/context/Database/PetsContext';
+import styles from './AddLost.styles'
+import { RazasGato, RazasPerro } from '../../../../firebase/hooks/CommonHooks';
+import { addLostPet, addPet } from '../../../../firebase/context/Database/PetsContext';
 import UseAnimations from 'react-useanimations'
 import loading from 'react-useanimations/lib/loading'
-import { UseLoginContext } from '../../../firebase/hooks/UseLogin';
+import { UseLoginContext } from '../../../../firebase/hooks/UseLogin';
 
-function AddPet() {
+function AddLost() {
     const [petData, setPetData] = useState({})
     const [razas, setRazas] = useState([])
     const [provinces, setProvinces] = useState([])
@@ -17,8 +17,6 @@ function AddPet() {
     const [showToast, setShowToast] = useState(false)
     const [toastData, setToastData] = useState([])
     const [sending, setSending] = useState(false)
-
-    const timeUnitRef = useRef()
 
     const navigate = useNavigate();
     const { currUser } = UseLoginContext()
@@ -30,30 +28,15 @@ function AddPet() {
         setPetData({ ...petData, [id]: value })
     }
 
-    function handleCheck(e) {
-        const { id, checked } = e.target
-        const data = { ...petData }
-
-        if (!data.additionalDetails)
-            data.additionalDetails = []
-
-        if (checked)
-            data.additionalDetails.push(id)
-        else {
-            const i = data.additionalDetails.indexOf(id)
-            data.additionalDetails.splice(i, 1)
+    async function handleSubmit(e) {
+        if (e) {
+            e.preventDefault()
         }
-        setPetData(data)
-    }
+        console.log(petData)
 
-    async function handleSubmit() {
-        petData.timeUnit ??= timeUnitRef.current.value
-        petData.additionalDetails ??= []
-        petData.description ??= ""
+        const { image, animal, race, sex, name, size, description, province, municipality, exactLocation } = petData
 
-        const { image, animal, race, sex, name, age, timeUnit, size, description, province, municipality, additionalDetails } = petData
-
-        if (!animal || !race || !sex || !name || !age || !timeUnit || !size || !province || !municipality || !additionalDetails) {
+        if (!animal || !race || !sex || !name || !description || !size || !province || !municipality || !exactLocation) {
             setToastData(['Campos vacios', 'Debes rellenar todos los campos', 'danger'])
             setShowToast(true)
             return
@@ -66,7 +49,7 @@ function AddPet() {
         }
 
         setSending(true)
-        const petResponse = await addPet(currUser.uid, image, animal, name, race, sex, age, timeUnit, size, description, province, municipality, additionalDetails)
+        const petResponse = await addLostPet(currUser.uid, image, name, animal, race, sex, size, description, province, municipality, exactLocation)
 
         if (petResponse?.message == "add-pet-error") {
             setToastData(['Error', 'Error al guardar la mascota', 'danger'])
@@ -86,7 +69,7 @@ function AddPet() {
             return
         }
 
-        setToastData(['Mascota guardada', 'Mascota guardada con exito', 'success'])
+        setToastData(['Mascota guardada', 'Se ha publicado su mascota', 'success'])
         setShowToast(true)
         navigate("..")
         setSending(false)
@@ -156,18 +139,18 @@ function AddPet() {
                 aria-labelledby="example-custom-modal-styling-title">
                 <Modal.Header className='bg-indigo' closeButton>
                     <Modal.Title className='text-white'>
-                        Agregar Mascota
+                        Agregar Mascota Perdida
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body className='bg-indigo px-5'>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <ImagePicker className="mb-3" title="Seleccionar Imagen" name="image" controlId={"imgPickInput"} onImageSet={(img) => setPetData({ ...petData, image: img })} />
                         <div className="mb-3">
                             <select className="form-select" id='animal' aria-label="Default select example" onChange={handleInput}>
                                 <option value={""}>Animal...</option>
                                 <option value="Perro">Perro</option>
                                 <option value="Gato">Gato</option>
-                                <option value="Otro">Otro</option>
+                                <option value="Otro">Otro (favor especificar en la descripcion)</option>
                             </select>
                         </div>
 
@@ -190,16 +173,6 @@ function AddPet() {
                             <input type="text" id='name' className="form-control" style={styles.customInput} placeholder='Nombre' onInput={handleInput} />
                         </div>
                         <div className="mb-3">
-                            <InputGroup>
-                                <input type="number" id='age' className="form-control" style={styles.customInput} placeholder='Edad' onInput={handleInput} />
-                                <select className="form-select" id='timeUnit' aria-label="Default select example" onChange={handleInput} ref={timeUnitRef}>
-                                    <option value="y">Años</option>
-                                    <option value="m">Meses</option>
-                                    <option value="w">Semanas</option>
-                                </select>
-                            </InputGroup>
-                        </div>
-                        <div className="mb-3">
                             <select className="form-select" id='size' aria-label="Default select example" onChange={handleInput}>
                                 <option value={""}>Tamaño...</option>
                                 <option value="Pequeño">Pequeño</option>
@@ -208,7 +181,7 @@ function AddPet() {
                             </select>
                         </div>
                         <div className="mb-3">
-                            <textarea className="form-control" id='description' style={styles.customInput} onChange={handleInput} placeholder='Descripcion (opcional)'></textarea>
+                            <textarea className="form-control" id='description' style={styles.customInput} onChange={handleInput} placeholder='Descripcion'></textarea>
                         </div>
                         <div className="mb-3">
                             <select className="form-select" id='province' aria-label="Default select example" onChange={handleInput}>
@@ -223,11 +196,9 @@ function AddPet() {
                             </select>
                         </div>
                         <div className="mb-3">
-                            <h5 className='text-white'>Datos adicionales</h5>
-                            <label className='d-block text-white'><input className="form-check-input" type="checkbox" id="Vacunado" onChange={handleCheck} /> Vacunado</label>
-                            <label className='d-block text-white'><input className="form-check-input" type="checkbox" id="Desparasitado" onChange={handleCheck} /> Desparasitado</label>
-                            <label className='d-block text-white'><input className="form-check-input" type="checkbox" id="Castrado" onChange={handleCheck} /> Castrado</label>
+                            <textarea className="form-control" id='exactLocation' style={styles.customInput} onChange={handleInput} placeholder='Indique exactamente el ultimo lugar y direccion donde fue vista su mascota'></textarea>
                         </div>
+                        <input type='submit' className='d-none' />
                     </form>
                 </Modal.Body>
                 <Modal.Footer className='bg-indigo'>
@@ -239,4 +210,4 @@ function AddPet() {
     )
 }
 
-export default AddPet
+export default AddLost

@@ -7,13 +7,16 @@ import './styles/style.css';
 import App from './App';
 import { LoginProvider } from './firebase/context/LoginContext';
 import { LoadingProvider } from './firebase/context/LoadingContext';
+import UserProvider from './firebase/context/UserProvider';
 
 const root = ReactDOM.createRoot( document.getElementById( 'root' ) );
 root.render(
   <React.StrictMode>
     <LoadingProvider>
       <LoginProvider>
-        <App />
+        <UserProvider>  
+          <App />
+        </UserProvider>
       </LoginProvider>
     </LoadingProvider>
   </React.StrictMode>

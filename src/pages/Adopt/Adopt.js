@@ -10,6 +10,7 @@ import loading from 'react-useanimations/lib/loading'
 import { IconContext } from 'react-icons'
 import { IoIosMore } from 'react-icons/io'
 import { Dropdown } from 'react-bootstrap'
+import { UseLoadingContext } from '../../firebase/hooks/UseLoading'
 
 function Adopt() {
   const [pets, setPets] = useState([])
@@ -60,7 +61,7 @@ function Adopt() {
           <Dropdown className='ms-3'>
             <Dropdown.Toggle className='text-dark' style={{ color: '#000', cursor: 'pointer' }} variant="success" id="dropdown-basic" as={MoreButton} />
             <Dropdown.Menu>
-              <Dropdown.Item className='text-dark' onClick={() => navigate("/pets/" + p.id)}>Detalles</Dropdown.Item>
+              <Dropdown.Item className='text-dark' onClick={() => navigate("" + p.id)}>Detalles</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </PetCard>)}

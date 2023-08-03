@@ -6,42 +6,46 @@ import notifSound from '../../../sounds/msg_notif.mp3'
 import useSound from 'use-sound';
 
 
-function ChatNotification({ image, count, href }) {
-    const [chats, setChats] = useState(null)
-    const [notSeen, setNotSeen] = useState(0)
+function ChatNotification ( { image, count, href } ) {
+    const [chats, setChats] = useState( null )
+    const [notSeen, setNotSeen] = useState( 0 )
 
-    const img = require('./../../../img/icons/' + image + '.png');
+    const img = require( './../../../img/icons/' + image + '.png' );
     const { currUser } = UseLoginContext()
 
-    const [play, { stop }] = useSound(notifSound)
+    const [play, { stop }] = useSound( notifSound )
 
-    useEffect(() => {
+    useEffect( () => {
         const cargarChats = async () => {
-            await loadChats(currUser.uid, (snapshot) => {
-                const snapshotData = snapshot.data()
-                const chatList = snapshotData.chatIDs
-                let chatCount = 0
+            await loadChats( currUser.uid, ( snapshot ) => {
+                try {
+                    const snapshotData = snapshot.data()
+                    const chatList = snapshotData.chatIDs
+                    let chatCount = 0
 
-                chatList.forEach(c => {
-                    if (snapshotData[c].uidSent != currUser.uid && !snapshotData[c].seen) {
-                        play()
+                    chatList.forEach( c => {
+                        if ( snapshotData[c].uidSent != currUser.uid && !snapshotData[c].seen ) {
+                            play()
 
-                        setTimeout(() => {
-                            stop()
-                        }, 1000);
-                    }
+                            setTimeout( () => {
+                                stop()
+                            }, 1000 );
+                        }
 
-                    if (snapshotData[c].uidSent != currUser.uid && !snapshotData[c].seen) {
-                        chatCount++
-                    }
-                    setNotSeen(chatCount)
-                });
+                        if ( snapshotData[c].uidSent != currUser.uid && !snapshotData[c].seen ) {
+                            chatCount++
+                        }
+                        setNotSeen( chatCount )
+                    } );
+                }
+                catch ( Exception ) {
 
-            })
+                }
+            } )
         }
 
         cargarChats()
-    }, [])
+    }, [] )
 
     // useEffect(() => {
     //     const chatList = chats?.chatIDs

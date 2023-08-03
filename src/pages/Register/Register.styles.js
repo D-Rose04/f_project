@@ -6,6 +6,7 @@ const style = {
     backgroundColor: 'var(--color-white)',
     borderRadius: '0%',
     fontSize: '15px',
+    color: '#000000',
     '&:focus': {
       boxShadow: 'none',
       border: 'none',

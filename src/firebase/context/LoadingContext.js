@@ -5,9 +5,17 @@ export const loadingContext = createContext();
 export function LoadingProvider ( { children } ) {
     const [loading, setLoading] = useState(true);
 
+    const handleClick = () => {
+        setLoading( true );
+        setTimeout( () => {
+            setLoading( false );
+        }, 2500 );
+    };
+
     const value ={
         loading,
-        setLoading
+        setLoading,
+        handleClick
     };
 
     return (

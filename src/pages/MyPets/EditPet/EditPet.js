@@ -75,7 +75,7 @@ function EditPet() {
         }
 
         setSending(true)
-        const petResponse = await editPet(petId, imageBucket, animal, name, race, sex, age, timeUnit, size, description, additionalDetails)
+        const petResponse = await editPet(petId, imageBucket, animal, name, race, sex, age, timeUnit, size, description, province, municipality, additionalDetails)
 
         if (!petResponse) {
             setToastData(['Error', 'Error al guardar la mascota', 'danger'])
@@ -271,7 +271,7 @@ function EditPet() {
                     </form>
                 </Modal.Body>
                 <Modal.Footer className='bg-indigo'>
-                    <Button className='d-flex justify-content-between' onClick={handleSubmit} disabled={sending}>{sending ? <UseAnimations animation={loadingIcon} strokeColor='white' /> : null} Agregar</Button>
+                    <Button className='d-flex justify-content-between' onClick={handleSubmit} disabled={sending}>{sending ? <UseAnimations animation={loadingIcon} strokeColor='white' /> : null} Guardar</Button>
                     <Button onClick={toBack} variant='danger'>Cancelar</Button>
                 </Modal.Footer>
             </Modal>
