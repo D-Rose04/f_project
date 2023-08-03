@@ -1,6 +1,7 @@
 import { addDoc, and, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, updateDoc, where } from "firebase/firestore"
 import { db } from "../../config/config-firebase"
 import { uploadPetPicture } from "../StorageContext"
+import { checkChatByUsers, createChat, sendMessage, sendMessageWithImage } from "./ChatContext"
 
 const PETS_COLLECTION = 'pets'
 const LOST_PETS_COLLECTION = 'lostPets'
@@ -261,6 +262,20 @@ export async function addLostPet(uid, image, name, animal, race, sex, size, desc
         })
 }
 
+export async function getLostPets() {
+    const petRef = query(collection(db, LOST_PETS_COLLECTION), and(where("deleted", "==", false), where("found", '==', false)))
+    const petSnap = await getDocs(petRef)
+
+    let petData = []
+    petSnap.forEach(pet => {
+        const data = pet.data()
+        data.id = pet.id
+        petData.push(data)
+    })
+
+    return petData
+}
+
 export async function getLostUserPets(uid) {
     const petsRef = query(collection(db, LOST_PETS_COLLECTION), where("uid", "==", uid))
     const petsSnap = await getDocs(petsRef)
@@ -329,6 +344,34 @@ export async function changeLostPetStatus(uid, petId) {
     })
 
     return true
+}
+
+export async function sendPetFound(uid, petId, image, whereFound, note) {
+    const petRef = doc(db, LOST_PETS_COLLECTION, petId)
+    const petSnap = await getDoc(petRef)
+
+    if (!petSnap.exists()) {
+        return null
+    }
+    const petData = petSnap.data()
+    const ownerUID = petData.uid
+
+    let chatId = await checkChatByUsers(uid, ownerUID)
+
+    if (chatId == null) {
+        chatId = await createChat(uid, ownerUID)
+    }
+
+    const msgText = `¿Donde lo encontre?
+    ${whereFound}`
+
+    await sendMessageWithImage(uid, msgText, image, chatId)
+
+    if (note) {
+        await sendMessage(uid, note, chatId)
+    }
+
+    return chatId
 }
 
 export async function markPetAsFound(petId) {

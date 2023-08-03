@@ -32,7 +32,7 @@ export default function ImagePicker ( { className, title, name, controlId, width
 
     return (
         <div className={'d-flex flex-column align-items-center ' + className}>
-            <img className='img-fluid' width={width ?? 300} src={imageURL ?? require( '../../../img/dog-white.png' )} onClick={() => imgInputRef.current.click()} alt='Imagen de la mascota' style={{maxHeight:'260px'}} />
+            <img className='img-fluid' width={width ?? 300} src={imageURL ?? require( '../../../img/dog-white.png' )} onClick={() => imgInputRef.current.click()} alt='Imagen de la mascota' style={{maxHeight:'260px', cursor:'pointer'}} />
             <input className='d-none' ref={imgInputRef} type='file' name={name} id={controlId} accept="image/*" onChange={onImageChange} />
             {imageURL ? <button type='button' className='btn btn-primary mt-2' onClick={deleteImage}>Borrar Imagen</button> : <h6 className='text-white'>{title}</h6>}
         </div>

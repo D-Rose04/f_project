@@ -23,9 +23,11 @@ import AddLost from './pages/MyPets/Lost/AddLost/AddLost';
 import EditLost from './pages/MyPets/Lost/EditLost/EditLost';
 import PetDetails from './pages/Adopt/PetDetails/PetDetails';
 import AdoptPet from './pages/Adopt/AdoptPet/AdoptPet';
+import LostPetDetails from './pages/LostPets/LostPetDetails/LostPetDetails';
+import LostPetFound from './pages/LostPets/LostPetFound/LostPetFound';
+import Router from './Router';
 
 export default function App() {
-  const { currUser } = UseLoginContext();
   const { loading, setLoading } = UseLoadingContext();
 
   useEffect(() => {
@@ -45,38 +47,7 @@ export default function App() {
             aria-label="Loading Spinner"
             data-testid="loader" />
         </div>
-        : <BrowserRouter>
-          <Routes>
-            {
-              currUser && currUser.uid ?
-                <Route path="/" element={<MainLayout />} children={[
-                  <Route path="/" element={<Adopt />} />,
-                  <Route path="/:petId" element={<PetDetails />} children={[
-                    <Route path='adopt' element={<AdoptPet />} />,
-                  ]} />,
-                  // <Route path="/adopt-pet/:petId" element={<PetDetails />} />,
-                  <Route path="/my-pets" element={<MyPets />} children={[
-                    <Route path='add-pet' element={<AddPet />} />,
-                    <Route path='edit-pet/:petId' element={<EditPet />} />,
-                  ]} />,
-                  <Route path='/my-pets/favorites' element={<Favorites />} />,
-                  <Route path='/my-pets/lost-pets' element={<Lost />} children={[
-                    <Route path='add-pet' element={<AddLost />} />,
-                    <Route path='edit/:petId' element={<EditLost />} />,
-                  ]} />,
-                  <Route path="/lost-pets" element={<LostPets />} />,
-                  <Route path="/chat" element={<Chat />} />,
-                  <Route path="/chat/:chatId" element={<ChatDetails />} />,
-                  <Route path="/social" element={<Social />} />,
-                  <Route path="/profile/:profileUID" element={<Profile />} />,
-                ]} />
-                : <Route path='/' element={<Landing />} />
-            }
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="*" element={<>No Match</>} />
-          </Routes>
-        </BrowserRouter>
+        : <Router />
       }
     </>
   )

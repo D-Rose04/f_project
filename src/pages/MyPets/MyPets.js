@@ -48,12 +48,15 @@ function MyPets() {
   }, [location])
 
   const EditButton = React.forwardRef(({ onClick }, ref) => (
-    <IoIosMore
+    <img
+      className="img-fluid rounded-circle"
       ref={ref}
       onClick={(e) => {
         e.preventDefault();
         onClick(e);
       }}
+      width={15}
+      src={require('../../img/icons/more.png')}
       style={{ cursor: 'pointer' }}
     />
   ));

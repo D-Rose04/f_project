@@ -1,75 +1,63 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Outlet, useNavigate, useOutletContext } from 'react-router-dom'
 import PetCard from '../../components/app/PetCard/PetCard'
-import { Button } from 'react-bootstrap'
+import { Button, Dropdown } from 'react-bootstrap'
+import { getLostPets } from '../../firebase/context/Database/PetsContext'
+import LostPetCard from '../../components/app/PetCard/LostPetCard'
+import UseAnimations from 'react-useanimations'
+import loading from 'react-useanimations/lib/loading'
+import { IoIosMore } from 'react-icons/io'
 
 function LostPets() {
+  const [lostPets, setLostPets] = useState([])
+  const [loadingPets, setLoadingPets] = useState(true)
+
   const navigate = useNavigate()
-  const handleShow = () => navigate('add-pet')
-
-  const petList = [
-    {
-      id: 1,
-      image: 'https://images.placeholders.dev/?width=220&height=220',
-      name: 'Firulais',
-      race: 'Labrador',
-      age: [2, 'y'],
-      location: 'Villa Juana'
-    },
-    {
-      id: 2,
-      image: 'https://images.placeholders.dev/?width=220&height=220',
-      name: 'Cloe',
-      race: 'Pitbull',
-      age: [2, 'y'],
-      location: 'Gualey'
-    },
-    {
-      id: 3,
-      image: 'https://images.placeholders.dev/?width=220&height=220',
-      name: 'Firulais',
-      race: 'Labrador',
-      age: [3, 'w'],
-      location: 'Villa Juana'
-    },
-    {
-      id: 4,
-      image: 'https://images.placeholders.dev/?width=220&height=220',
-      name: 'Firulais',
-      race: 'Labrador',
-      age: [7, 'm'],
-      location: 'Villa Juana'
-    },
-    {
-      id: 5,
-      image: 'https://images.placeholders.dev/?width=220&height=220',
-      name: 'Firulais',
-      race: 'Labrador',
-      age: [1, 'y'],
-      location: 'Villa Juana'
-    },
-    {
-      id: 6,
-      image: 'https://images.placeholders.dev/?width=220&height=220',
-      name: 'Firulais',
-      race: 'Labrador',
-      age: [2, 'y'],
-      location: 'Villa Juana'
-    },
-
-  ]
-
   const [setTitle, setSidebar, setSidebarCols] = useOutletContext()
-  
+
+  // const handleShow = () => navigate('add-pet')
+
   useEffect(() => {
     setTitle("Mascotas perdidas")
     setSidebarCols(2)
-    setSidebar(<Button variant='primary' onClick={handleShow}>Agregar</Button>)
+    setSidebar(<></>)
+
+    async function loadPets() {
+      const petsData = await getLostPets()
+      setLostPets(petsData)
+      setLoadingPets(false)
+    }
+
+    loadPets()
   }, [])
 
-  return (
+  const MoreButton = React.forwardRef(({ onClick }, ref) => (
+    <img
+      className="img-fluid rounded-circle"
+      ref={ref}
+      onClick={(e) => {
+        e.preventDefault();
+        onClick(e);
+      }}
+      width={15}
+      src={require('../../img/icons/more.png')}
+      style={{ cursor: 'pointer' }}
+    />
+  ));
+
+  return (loadingPets ?
+    <div className='row h-100 d-flex justify-content-center align-items-center'>
+      <UseAnimations animation={loading} size={100} strokeColor='white' />
+    </div> :
     <div className="row row-cols-2 row-cols-lg-3 row-cols-xl-4 g-2 py-1">
-      {petList.map(p => <PetCard key={p.id} id={p.id} name={p.name} image={p.image} age={p.age} race={p.race} location={p.location} />)}
+      {lostPets.map(p => <LostPetCard key={p.id} pet={p}>
+        <Dropdown className='ms-3'>
+          <Dropdown.Toggle variant="success" id="dropdown-basic" as={MoreButton} />
+          <Dropdown.Menu>
+            <Dropdown.Item className='text-dark' onClick={() => navigate("" + p.id)}>Detalles</Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+      </LostPetCard>)}
       <Outlet />
     </div>
   )

@@ -31,22 +31,22 @@ function Adopt() {
       const favIds = await getFavoritePetsIds(currUser.uid)
       setFavPetIds(favIds)
       setPets(petsData)
+      setLoadingPets(false)
     }
 
     loadPets()
   }, [])
 
-  useEffect(() => {
-    setLoadingPets(false)
-  }, [pets])
-
   const MoreButton = React.forwardRef(({ onClick }, ref) => (
-    <IoIosMore
+    <img
+      className="img-fluid rounded-circle"
       ref={ref}
       onClick={(e) => {
         e.preventDefault();
         onClick(e);
       }}
+      width={15}
+      src={require('../../img/icons/more.png')}
       style={{ cursor: 'pointer' }}
     />
   ));
