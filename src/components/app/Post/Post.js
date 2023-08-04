@@ -1,16 +1,60 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import Accordion from 'react-bootstrap/Accordion'
 import CommentList from '../Comments/CommentList'
 import CommentInput from '../Comments/CommentInput';
 import {formatDate} from '../../../firebase/hooks/CommonHooks'
 import {getURL} from '../../../firebase/context/StorageContext'
+import { likePost, dislikePost, POSTS_COLLECTION } from "../../../firebase/context/Database/PostsContext";
+import { loginContext } from "../../../firebase/context/LoginContext"
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { onSnapshot, doc } from "@firebase/firestore";
+import { db } from "../../../firebase/config/config-firebase"
+
 
 function Post({ post }) {
-  const { id, comments, dislikes, likes, postBody, postImage, user, time } = post;
-  const { name, image, desc, uid}=user
+  const { id, comments, postBody, postImage, user, time } = post;
+  const { image}=user
 
   const [userImg, setUserImg]=useState('')
   const [img, setImg]=useState('')
+
+  const authContext = useContext(loginContext)
+
+  const [likesCount, setLikesCount] = useState(post.likes); // Estado para el conteo de likes
+  const [dislikesCount, setDislikesCount] = useState(post.dislikes); // Estado para el conteo de dislikes
+
+  const uid = authContext.currUser.uid;
+    
+    const handleLike = async () => {
+    await likePost(post.id, uid);
+
+    setLikesCount(likesCount + 1);
+
+    toast.success("¡Te gusta esta publicación! :)");
+  };
+
+  const handleDislike = async () => {
+    await dislikePost(post.id, uid);
+
+    setDislikesCount(dislikesCount + 1);
+
+    toast.success("¡No te gusta esta publicación! :(");
+  
+  };
+
+//   useEffect(() => {
+//     // Crea una suscripción para recibir los cambios en el documento del post
+//     const unsubscribe = onSnapshot(doc(db, POSTS_COLLECTION, post.id), (snapshot) => {
+//       const updatedPost = snapshot.data();
+//       setLikesCount(updatedPost.likes); // Actualiza el estado local con los nuevos likes
+//       setDislikesCount(updatedPost.dislikes); // Actualiza el estado local con los nuevos dislikes
+//     });
+
+//     // Retorna una función de limpieza para cancelar la suscripción cuando el componente se desmonte
+//     return () => unsubscribe();
+//   }, [post.id]);
+
 
   useEffect(()=>{
 
@@ -21,7 +65,6 @@ function Post({ post }) {
         setImg(await getURL(postImage))
         }
     }
-
     cargarImagenes()
 
   },[])
@@ -53,15 +96,15 @@ function Post({ post }) {
                         src={img} alt="" />
                 </div>:null}
                 <div className="w-50 d-flex justify-content-around mt-3">
-                    <a href="#" className="d-flex align-items-center text-decoration-none">
+                    <a href="#" className="d-flex align-items-center text-decoration-none" onClick={handleLike}>
                         <img className="img-fluid" width="28"
                             src={require("./../../../img/icons/like.png")} alt="" />
-                        <span className=" ms-2">{likes}</span>
+                        <span className=" ms-2">{post.likes}</span>
                     </a>
-                    <a href="#" className="d-flex align-items-center text-decoration-none">
+                    <a href="#" className="d-flex align-items-center text-decoration-none" onClick={handleDislike}>
                         <img className="img-fluid" width="28"
                             src={require("./../../../img/icons/dislike.png")} alt="" />
-                        <span className=" ms-2">{dislikes}</span>
+                        <span className=" ms-2">{post.dislikes}</span>
                     </a>
                     <a href="#" className="d-flex align-items-center text-decoration-none">
                         <img className="img-fluid" width="28"
@@ -69,6 +112,7 @@ function Post({ post }) {
                         <span className=" ms-2">{comments.length}</span>
                     </a>
                 </div>
+                <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick rtl pauseOnFocusLoss draggable pauseOnHover />
             </div>
             <hr className=" my-3" />
             <CommentInput user={user} postId={id} />

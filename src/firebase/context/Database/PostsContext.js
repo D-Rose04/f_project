@@ -1,11 +1,12 @@
-import { addDoc, collection, serverTimestamp, getDocs } from "@firebase/firestore"
+import { addDoc, collection, serverTimestamp, getDocs, doc, updateDoc, increment, arrayUnion } from "@firebase/firestore"
 import { getUserByUID } from "./UserContext"
 import { db } from "../../config/config-firebase"
+import { uploadPostPicture} from "../StorageContext";
 
-const POSTS_COLLECTION = 'posts' //cuando tengas que poner el nombre de la coleccion, usa esta constante
+export const POSTS_COLLECTION = 'posts'; //cuando tengas que poner el nombre de la coleccion, usa esta constante
 
 //este es solo un ejemplo
-export async function addPost(uid, postBody, postImage) {
+export async function addPost(uid, postBody, image) {
     try{
     const user = await getUserByUID(uid) //metodo en UserContext, no probado aun
 
@@ -13,6 +14,16 @@ export async function addPost(uid, postBody, postImage) {
         return //si el usuario no existe, para la ejecucion, puedes poner lo que quieras aqui
     }
 
+
+    // subir img a firebase
+    // let imgUrl = "";
+    // if (postImage) {
+    //   const imageRef = ref(storage);
+    //   await uploadString(imageRef, postImage, "data_url");
+    //   imgUrl = await getDownloadURL(imageRef);
+    // }
+
+    const postImage = await uploadPostPicture(uid, image, postBody)
     const data = {
         user: {
             uid: uid,
@@ -52,4 +63,22 @@ export async function getPosts() {
   });
 
   return posts;
+}
+
+export async function likePost(postId, uid) {
+  const postRef = doc(db, POSTS_COLLECTION, postId);
+
+  await updateDoc(postRef, {
+    likes: increment(1), // Incrementar el contador de likes en 1
+    likesBy: arrayUnion(uid), // Agregar el uid del usuario actual a la lista de likesBy
+  });
+}
+
+export async function dislikePost(postId, uid) {
+  const postRef = doc(db, POSTS_COLLECTION, postId);
+
+  await updateDoc(postRef, {
+    dislikes: increment(1), // Incrementar el contador de dislikes en 1
+    dislikesBy: arrayUnion(uid), // Agregar el uid del usuario actual a la lista de dislikesBy
+  });
 }

@@ -5,14 +5,19 @@ import { useNavigate } from 'react-router-dom';
 import styles from './AddPost.styles'
 import { loginContext } from '../../../../firebase/context/LoginContext'
 import { addPost } from '../../../../firebase/context/Database/PostsContext'
+// import { getURL } from '../../../firebase/context/StorageContext'
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 function PostDetails() {
     const navigate = useNavigate();
     const toAdd = () => navigate('..');
-
+ 
     const authContext = useContext(loginContext)
     const [postBody, setPostBody] = useState("");
     const [postImage, setPostImage] = useState("");
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -24,6 +29,8 @@ function PostDetails() {
     
           setPostBody("");
           setPostImage("");
+
+        toast.success("¡Agregaste una publicación! :)");
     
         } catch (error) {
           console.error("Error al agregar la publicación:", error);
@@ -47,6 +54,7 @@ function PostDetails() {
                         value={postBody}
                         onChange={(event) => setPostBody(event.target.value)}/>
                     </div>
+                    <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick rtl pauseOnFocusLoss draggable pauseOnHover />
                 </form>
             </Modal.Body>
             <Modal.Footer className='bg-indigo'>
