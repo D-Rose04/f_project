@@ -6,6 +6,7 @@ const PROFILE_FOLDER='profile_pics'
 const MESSAGES_MULTIMEDIA_FOLDER='messages_img'
 const PETS_FOLDER='pets_img'
 const LOST_PETS_FOLDER='lost_pets_img'
+const POST_FOLDER='post_img'
 // Uploads image and returns the storage bucket
 // export async function uploadImage(image, uid) {
 //     const formattedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -56,3 +57,22 @@ export function deleteImage(bucket) {
 export async function getURL(bucket) {
     return await getDownloadURL(ref(storage, bucket));
 }
+
+// export async function uploadPostPicture(uid, image, postBody){
+//     // const formattedDate = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss'Z'");
+//     const bucket = `${BUCKET_URL}/${MESSAGES_MULTIMEDIA_FOLDER}/${postBody}/${uid}_${postImage}.jpg`;
+//     const storageRef=ref(storage, bucket)
+//     await uploadBytes(storageRef, image)
+//     return bucket
+// }
+
+export async function uploadPostPicture(uid, image, postBody) {
+    const fileName = `${uid}_${Date.now()}.jpg`; 
+    const storageRef = ref(storage, `${BUCKET_URL}/${POST_FOLDER}/${postBody}/${fileName}`);
+    await uploadBytes(storageRef, image);
+  
+    // Obten la URL de descarga de la imagen
+    const downloadURL = await getDownloadURL(storageRef);
+  
+    return downloadURL;
+  }

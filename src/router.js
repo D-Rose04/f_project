@@ -22,6 +22,8 @@ import PetDetails from './pages/Adopt/PetDetails/PetDetails';
 import AdoptPet from './pages/Adopt/AdoptPet/AdoptPet';
 import LostPetDetails from './pages/LostPets/LostPetDetails/LostPetDetails';
 import LostPetFound from './pages/LostPets/LostPetFound/LostPetFound';
+import AddPost from "./pages/Social/CRUD/AddPost/AddPost";
+import Help from  "./pages/Help/Help";
 
 function Router() {
   const { currUser } = UseLoginContext();
@@ -54,7 +56,9 @@ function Router() {
               <Route path="/chat" element={<Chat />} />,
               <Route path="/chat/:chatId" element={<ChatDetails />} />,
               <Route path="/social" element={<Social />} />,
+              <Route path='/social/add-post' element={<AddPost/>} />,
               <Route path="/profile/:profileUID" element={<Profile />} />,
+              <Route path="/help" element={<Help/>} />
             ]} />
             : <Route path='/' element={<Landing />} />
         }
