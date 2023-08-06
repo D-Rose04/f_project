@@ -25,7 +25,7 @@ import PetDetails from './pages/Adopt/PetDetails/PetDetails';
 import AdoptPet from './pages/Adopt/AdoptPet/AdoptPet';
 import LostPetDetails from './pages/LostPets/LostPetDetails/LostPetDetails';
 import LostPetFound from './pages/LostPets/LostPetFound/LostPetFound';
-import Router from './Router';
+import Router from './router'
 
 export default function App() {
   const { loading, setLoading } = UseLoadingContext();
