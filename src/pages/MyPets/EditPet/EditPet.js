@@ -86,8 +86,7 @@ function EditPet() {
 
         setToastData(['Mascota guardada', 'Mascota guardada con exito', 'success'])
         setShowToast(true)
-        navigate("..")
-        setSending(false)
+        setTimeout(()=>navigate(".."), 3000)
     }
 
     useEffect(() => {
@@ -97,8 +96,7 @@ function EditPet() {
             if (pet == null) {
                 setToastData(['Mascota no encontrada', 'No se ha encontrado la mascota solicitada', 'warning'])
                 setShowToast(true)
-                navigate("..")
-                return
+                setTimeout(()=>navigate(".."), 3000)
             }
 
             const provRes = await fetch("https://api.digital.gob.do/v1/territories/provinces")

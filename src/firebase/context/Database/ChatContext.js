@@ -136,6 +136,24 @@ export async function sendMessageWithImage(uid, text, image, chatId) {
     await updateUserChats(uid, chatId, text, time)
 }
 
+export async function sendMessageWithBucket(uid, text, imgBucket, chatId) {
+    const chatRef = doc(db, CHATS_COLLECTION, chatId);
+    const time = Timestamp.now()
+    const data = {
+        uid,
+        text,
+        image: imgBucket,
+        createdAt: time,
+        seen: false
+    }
+
+    await updateDoc(chatRef, {
+        messages: arrayUnion(data)
+    })
+
+    await updateUserChats(uid, chatId, text, time)
+}
+
 export async function seeMessages(chatId, uid, contactUid) {
     const userChatRef = doc(db, USER_CHATS_COLLECTION, uid)
     const userChatSnap = await getDoc(userChatRef)

@@ -27,7 +27,7 @@ function Adopt() {
     setSidebarCols(2)
 
     const loadPets = async () => {
-      const petsData = await getPets()
+      const petsData = await getPets(currUser.uid)
       const favIds = await getFavoritePetsIds(currUser.uid)
       setFavPetIds(favIds)
       setPets(petsData)

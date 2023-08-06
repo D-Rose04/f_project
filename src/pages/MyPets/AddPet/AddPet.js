@@ -88,8 +88,7 @@ function AddPet() {
 
         setToastData(['Mascota guardada', 'Mascota guardada con exito', 'success'])
         setShowToast(true)
-        navigate("..")
-        setSending(false)
+        setTimeout(()=>navigate(".."), 3000)
     }
 
     useEffect(() => {
@@ -213,13 +212,13 @@ function AddPet() {
                         <div className="mb-3">
                             <select className="form-select" id='province' aria-label="Default select example" onChange={handleInput}>
                                 <option value={""}>Provincia...</option>
-                                {provinces.map(prov => <option value={prov.name}>{prov.name}</option>)}
+                                {provinces.map(prov => <option key={prov.name} value={prov.name}>{prov.name}</option>)}
                             </select>
                         </div>
                         <div className="mb-3">
                             <select className="form-select" id='municipality' aria-label="Default select example" onChange={handleInput}>
                                 <option value={""}>Municipio...</option>
-                                {municipalities.map(mun => <option value={mun.name}>{mun.name}</option>)}
+                                {municipalities.map(mun => <option key={mun.name} value={mun.name}>{mun.name}</option>)}
                             </select>
                         </div>
                         <div className="mb-3">

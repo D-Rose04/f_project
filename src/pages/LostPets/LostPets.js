@@ -7,6 +7,7 @@ import LostPetCard from '../../components/app/PetCard/LostPetCard'
 import UseAnimations from 'react-useanimations'
 import loading from 'react-useanimations/lib/loading'
 import { IoIosMore } from 'react-icons/io'
+import { UseLoginContext } from '../../firebase/hooks/UseLogin'
 
 function LostPets() {
   const [lostPets, setLostPets] = useState([])
@@ -14,6 +15,7 @@ function LostPets() {
 
   const navigate = useNavigate()
   const [setTitle, setSidebar, setSidebarCols] = useOutletContext()
+  const { currUser } = UseLoginContext()
 
   // const handleShow = () => navigate('add-pet')
 
@@ -23,7 +25,7 @@ function LostPets() {
     setSidebar(<></>)
 
     async function loadPets() {
-      const petsData = await getLostPets()
+      const petsData = await getLostPets(currUser.uid)
       setLostPets(petsData)
       setLoadingPets(false)
     }

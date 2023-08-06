@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import { Link, Outlet, useOutletContext, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useOutletContext, useNavigate, useLocation } from 'react-router-dom'
 import styles from './LostPetDetails.styles'
 import { Button } from 'react-bootstrap'
 import UseAnimations from 'react-useanimations'
@@ -18,6 +18,7 @@ function LostPetDetails() {
   const [setTitle, setSidebar] = useOutletContext()
   const { petId } = useParams()
   const { currUser } = UseLoginContext()
+  const location = useLocation()
 
   const navigate = useNavigate()
 
@@ -47,7 +48,7 @@ function LostPetDetails() {
 
   useEffect(() => {
     setTitle("Animal Perdido")
-    setSidebar(<Link className='text-decoration-none' to='/lost-pets'>
+    setSidebar(<Link className='text-decoration-none' to={location.pathname.includes('my-pets') ? '/my-pets/lost-pets' : '/lost-pets'}>
       <div className={'bg-indigo d-flex justify-content-start align-items-center p-1 mb-1 ms-1 rounded-5'} style={{ backgroundColor: 'var(--color-thistle-d)' }}>
         <span className={'flex-grow-1 ms-2 text-decoration-none'}>Volver</span>
       </div>

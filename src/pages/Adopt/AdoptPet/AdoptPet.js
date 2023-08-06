@@ -7,7 +7,7 @@ import { getUserByUID } from '../../../firebase/context/Database/UserContext'
 import UseAnimations from 'react-useanimations'
 import loading from 'react-useanimations/lib/loading'
 import { UseLoginContext } from '../../../firebase/hooks/UseLogin'
-import { addAdoptRequest } from '../../../firebase/context/Database/PetsContext'
+import { addAdoptRequest, getAdoptRequest, getAdoptRequestByUserAndPet } from '../../../firebase/context/Database/PetsContext'
 
 function AdoptPet() {
     const [user, setUser] = useState({})
@@ -58,8 +58,10 @@ function AdoptPet() {
         }
 
         adoptData.liveWith ??= []
+        adoptData.fullName = `${user.name} ${user.lastName}`
+        adoptData.phone = user.phone
 
-        const { userAge, direction, prevExperience, liveWith, placeType, placeDesc } = adoptData
+        const { fullName, phone, userAge, direction, prevExperience, liveWith, placeType, placeDesc } = adoptData
 
         if (!userAge || !direction || !prevExperience || !placeType || !placeDesc) {
             setToastData(['Campos vacios', 'Debes rellenar todos los campos', 'danger'])
@@ -68,7 +70,7 @@ function AdoptPet() {
         }
 
         setSending(true)
-        const petResponse = await addAdoptRequest(currUser.uid, petId, userAge, direction, prevExperience, liveWith, placeType, placeDesc)
+        const petResponse = await addAdoptRequest(currUser.uid, petId, fullName, phone, userAge, direction, prevExperience, liveWith, placeType, placeDesc)
 
         if (petResponse == "error") {
             setToastData(['Error', 'Error al enviar la solicitud, intentelo de nuevo mas tarde', 'danger'])
@@ -78,12 +80,18 @@ function AdoptPet() {
 
         setToastData(['Solicitud enviada', 'Solicitud enviada con exito', 'success'])
         setShowToast(true)
-        navigate("..")
-        setSending(false)
+        setTimeout(() => navigate(".."), 3000)
     }
 
     useEffect(() => {
         async function loadUserData() {
+            const petRequest = await getAdoptRequestByUserAndPet(currUser.uid, petId)
+            if (petRequest) {
+                setLoadingUser(false)
+                setUser(null)
+                return
+            }
+
             const userData = await getUserByUID(currUser.uid)
             setUser(userData)
             setLoadingUser(false)
@@ -118,101 +126,88 @@ function AdoptPet() {
                         <div className='row h-100 d-flex justify-content-center align-items-center'>
                             <UseAnimations animation={loading} size={100} strokeColor='white' />
                         </div> :
-                        <form onSubmit={handleSubmit}>
-                            <div className='mb-2'>
-                                <label className='form-label text-white fs-5 fw-bold'>Rellena todos los datos</label>
-                            </div>
-                            <div className="mb-3">
-                                <label className='form-label text-white fw-bold'>Nombre</label>
-                                <input className="form-control" style={styles.customInput} value={user.name} readOnly={true} />
-                            </div>
-                            <div className="mb-3">
-                                <label className='form-label text-white fw-bold'>Apellido</label>
-                                <input className="form-control" style={styles.customInput} value={user.lastName} readOnly={true} />
-                            </div>
-                            <div className="mb-3">
-                                <label className='form-label text-white fw-bold'>Email</label>
-                                <input className="form-control" style={styles.customInput} value={user.email} readOnly={true} />
-                            </div>
-                            <div className="mb-3">
-                                <label className='form-label text-white fw-bold'>Telefono</label>
-                                <input className="form-control" style={styles.customInput} value={user.phone} readOnly={true} />
-                            </div>
-                            <div className="mb-3">
-                                <label className='form-label text-white fw-bold'>Edad (en años)</label>
-                                <input type='number' id='userAge' className="form-control" style={styles.customInput} onInput={handleInput} />
-                            </div>
-                            <div className="mb-3">
-                                <label className='form-label text-white fw-bold'>Direccion</label>
-                                <textarea className="form-control" id='direction' style={styles.customInput} rows={3} onInput={handleInput}></textarea>
-                            </div>
-                            <label className='form-label text-white fw-bold'>¿Ha tenido experiencia previa con animales?</label>
-                            <div className='mb-3'>
-                                <div class="form-check-inline">
-                                    <input class="form-check-input" type="radio" name="prevExperience" id="prevYes" value={true} onChange={handleRadio} />
-                                    <label class="form-check-label text-white ms-1" for="prevYes">
-                                        Si
-                                    </label>
+                        user ?
+                            <form onSubmit={handleSubmit}>
+                                <div className='mb-2'>
+                                    <label className='form-label text-white fs-5 fw-bold'>Rellena todos los datos</label>
                                 </div>
-                                <div class="form-check-inline">
-                                    <input class="form-check-input" type="radio" name="prevExperience" id="prevNo" value={false} onChange={handleRadio} />
-                                    <label class="form-check-label text-white ms-1" for="prevNo">
-                                        No
-                                    </label>
+                                <div className="mb-3">
+                                    <label className='form-label text-white fw-bold'>Nombre</label>
+                                    <input className="form-control" style={styles.customInput} value={user.name} readOnly={true} />
                                 </div>
-                            </div>
-                            <label className='form-label text-white fw-bold'>¿Con quienes va a convivir el animal ademas de usted?</label>
-                            <div className='mb-3'>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="chkDog" value="Perros" onChange={handleCheck} />
-                                    <label class="form-check-label text-white" for="chkDog">Perro(s)</label>
+                                <div className="mb-3">
+                                    <label className='form-label text-white fw-bold'>Apellido</label>
+                                    <input className="form-control" style={styles.customInput} value={user.lastName} readOnly={true} />
                                 </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="chkCat" value="Gatos" onChange={handleCheck} />
-                                    <label class="form-check-label text-white" for="chkCat">Gato(s)</label>
+                                <div className="mb-3">
+                                    <label className='form-label text-white fw-bold'>Email</label>
+                                    <input className="form-control" style={styles.customInput} value={user.email} readOnly={true} />
                                 </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="chkOtherAnimal" value="Otro tipo de animal" onChange={handleCheck} />
-                                    <label class="form-check-label text-white" for="chkOtherAnimal">Otro tipo de animal</label>
+                                <div className="mb-3">
+                                    <label className='form-label text-white fw-bold'>Telefono</label>
+                                    <input className="form-control" style={styles.customInput} value={user.phone} readOnly={true} />
                                 </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="chkKids" value="Niños" onChange={handleCheck} />
-                                    <label class="form-check-label text-white" for="chkKids">Niño(s)</label>
+                                <div className="mb-3">
+                                    <label className='form-label text-white fw-bold'>Edad (en años)</label>
+                                    <input type='number' id='userAge' className="form-control" style={styles.customInput} onInput={handleInput} />
                                 </div>
-                            </div>
-                            <label className='form-label text-white fw-bold'>Seleccione el tipo de lugar donde va a vivir el animal</label>
-                            <div className='mb-3'>
-                                <div class="form-check-inline">
-                                    <input class="form-check-input" type="radio" name="placeType" id="apartment" value='Apartamento' onChange={handleRadio} />
-                                    <label class="form-check-label text-white ms-1" for="apartment">
-                                        Apartamento
-                                    </label>
+                                <div className="mb-3">
+                                    <label className='form-label text-white fw-bold'>Direccion</label>
+                                    <textarea className="form-control" id='direction' style={styles.customInput} rows={3} onInput={handleInput}></textarea>
                                 </div>
-                                <div class="form-check-inline">
-                                    <input class="form-check-input" type="radio" name="placeType" id="smallHouse" value='Casa pequeña sin patio amplio' onChange={handleRadio} />
-                                    <label class="form-check-label text-white ms-1" for="smallHouse">
-                                        Casa pequeña sin patio amplio
-                                    </label>
+                                <label className='form-label text-white fw-bold'>¿Ha tenido experiencia previa con animales?</label>
+                                <div className='mb-3'>
+                                    <div className="form-check-inline">
+                                        <input className="form-check-input" type="radio" name="prevExperience" id="prevYes" value={true} onChange={handleRadio} />
+                                        <label className="form-check-label text-white ms-1" htmlFor="prevYes">
+                                            Si
+                                        </label>
+                                    </div>
+                                    <div className="form-check-inline">
+                                        <input className="form-check-input" type="radio" name="prevExperience" id="prevNo" value={false} onChange={handleRadio} />
+                                        <label className="form-check-label text-white ms-1" htmlFor="prevNo">
+                                            No
+                                        </label>
+                                    </div>
                                 </div>
-                                <div class="form-check-inline">
-                                    <input class="form-check-input" type="radio" name="placeType" id="midHouse" value='Casa mediana-grande sin patio amplio' onChange={handleRadio} />
-                                    <label class="form-check-label text-white ms-1" for="midHouse">
-                                        Casa mediana-grande sin patio amplio
-                                    </label>
+                                <label className='form-label text-white fw-bold'>¿Con quienes va a convivir el animal ademas de usted?</label>
+                                <div className='mb-3'>
+                                    <div className="form-check form-check-inline">
+                                        <input className="form-check-input" type="checkbox" id="chkDog" value="Perros" onChange={handleCheck} />
+                                        <label className="form-check-label text-white" htmlFor="chkDog">Perro(s)</label>
+                                    </div>
+                                    <div className="form-check form-check-inline">
+                                        <input className="form-check-input" type="checkbox" id="chkCat" value="Gatos" onChange={handleCheck} />
+                                        <label className="form-check-label text-white" htmlFor="chkCat">Gato(s)</label>
+                                    </div>
+                                    <div className="form-check form-check-inline">
+                                        <input className="form-check-input" type="checkbox" id="chkOtherAnimal" value="Otro tipo de animal" onChange={handleCheck} />
+                                        <label className="form-check-label text-white" htmlFor="chkOtherAnimal">Otro tipo de animal</label>
+                                    </div>
+                                    <div className="form-check form-check-inline">
+                                        <input className="form-check-input" type="checkbox" id="chkKids" value="Niños" onChange={handleCheck} />
+                                        <label className="form-check-label text-white" htmlFor="chkKids">Niño(s)</label>
+                                    </div>
                                 </div>
-                                <div class="form-check-inline">
-                                    <input class="form-check-input" type="radio" name="placeType" id="bigHouse" value='Casa con patio amplio' onChange={handleRadio} />
-                                    <label class="form-check-label text-white ms-1" for="bigHouse">
-                                        Casa con patio amplio
-                                    </label>
+                                <label className='form-label text-white fw-bold'>Seleccione el tipo de lugar donde va a vivir el animal</label>
+                                <div className="mb-3">
+                                    <select className="form-select" id='placeType' onChange={handleInput}>
+                                        <option value={""}>Lugar...</option>
+                                        <option value="Apartamento">Apartamento</option>
+                                        <option value="Casa pequeña sin patio amplio">Casa pequeña sin patio amplio</option>
+                                        <option value="Casa mediana-grande sin patio amplio">Casa mediana-grande sin patio amplio</option>
+                                        <option value="Casa con patio amplio">Casa con patio amplio</option>
+                                    </select>
                                 </div>
-                            </div>
-                            <div className="mb-3">
-                                <label className='form-label text-white fw-bold'>Describa el lugar donde va a convivir el animal</label>
-                                <textarea className="form-control" id='placeDesc' style={styles.customInput} rows={3} onInput={handleInput}></textarea>
-                            </div>
-                            <input type='submit' className='d-none' />
-                        </form>}
+                                <div className="mb-3">
+                                    <label className='form-label text-white fw-bold'>Describa el lugar donde va a convivir el animal</label>
+                                    <textarea className="form-control" id='placeDesc' style={styles.customInput} rows={3} onInput={handleInput}></textarea>
+                                </div>
+                                <input type='submit' className='d-none' />
+                            </form> :
+                            <div className='row h-100 d-flex justify-content-center align-items-center'>
+                                <h5 className='text-white text-center'>Ya has enviado una solicitud para adoptar esta mascota, espera respuesta del dueño</h5>
+                            </div>}
                 </Modal.Body>
                 <Modal.Footer className='bg-indigo'>
                     <Button className='d-flex justify-content-between' onClick={handleSubmit} disabled={sending}>{sending ? <UseAnimations animation={loading} strokeColor='white' /> : null} Enviar</Button>

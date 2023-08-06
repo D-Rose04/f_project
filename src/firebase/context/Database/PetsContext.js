@@ -1,4 +1,4 @@
-import { addDoc, and, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, updateDoc, where } from "firebase/firestore"
+import { addDoc, and, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, or, query, updateDoc, where } from "firebase/firestore"
 import { db } from "../../config/config-firebase"
 import { uploadPetPicture } from "../StorageContext"
 import { checkChatByUsers, createChat, sendMessage, sendMessageWithImage } from "./ChatContext"
@@ -24,6 +24,7 @@ export async function addPet(uid, image, animal, name, race, sex, ageNum, timeUn
         province,
         municipality,
         additionalDetails,
+        adopted: false,
         deleted: false
     }
 
@@ -59,8 +60,10 @@ export async function addPet(uid, image, animal, name, race, sex, ageNum, timeUn
         })
 }
 
-export async function getPets() {
-    const petsQuery = query(collection(db, PETS_COLLECTION), where("deleted", "==", false))
+export async function getPets(uid) {
+    const petsQuery = query(collection(db, PETS_COLLECTION), and(where("deleted", "==", false),
+        where("uid", '!=', uid),
+        where('adopted', '==', false)))
     const petsSnap = await getDocs(petsQuery)
     let petsData = []
 
@@ -144,6 +147,13 @@ export async function changePetStatus(uid, petId) {
     return true
 }
 
+export async function setPetAsAdopted(petId) {
+    const petRef = doc(db, PETS_COLLECTION, petId)
+    await updateDoc(petRef, {
+        adopted: true
+    })
+}
+
 export async function addFav(uid, petId) {
     const userRef = doc(db, USERS_COLLECTION, uid)
     await updateDoc(userRef, {
@@ -187,16 +197,19 @@ export async function getFavoritePets(uid) {
     return favPets
 }
 
-export async function addAdoptRequest(uid, petId, userAge, direction, prevExperience, liveWith, placeType, placeDesc) {
+export async function addAdoptRequest(uid, petId, fullName, phone, userAge, direction, prevExperience, liveWith, placeType, placeDesc) {
     const data = {
         uid,
         petId,
+        fullName,
+        phone,
         userAge,
         direction,
-        prevExperience,
+        prevExperience: prevExperience == 'true',
         liveWith,
         placeType,
-        placeDesc
+        placeDesc,
+        status: 'pending'
     }
 
     const reqsRef = collection(db, ADOPT_REQUESTS_COLLECTION)
@@ -205,6 +218,51 @@ export async function addAdoptRequest(uid, petId, userAge, direction, prevExperi
         response = res
     }).catch(err => {
         response = "error"
+    })
+    return response
+}
+
+export async function getAdoptRequests(petId) {
+    const reqsRef = collection(db, ADOPT_REQUESTS_COLLECTION)
+    const reqsQuery = query(reqsRef, where("petId", "==", petId))
+    const reqsSnap = await getDocs(reqsQuery)
+
+    let reqData = []
+    reqsSnap.forEach(req => {
+        const data = req.data()
+        data.id = req.id
+        reqData.push(data)
+    })
+
+    return reqData
+}
+
+export async function getAdoptRequest(reqId) {
+    const reqRef = doc(db, ADOPT_REQUESTS_COLLECTION, reqId)
+    const reqSnap = await getDoc(reqRef)
+
+    return reqSnap.exists() ? reqSnap.data() : null
+}
+
+export async function getAdoptRequestByUserAndPet(uid, petId) {
+    const reqRef = collection(db, ADOPT_REQUESTS_COLLECTION)
+    const reqQuery = query(reqRef, and(where('uid', '==', uid), where('petId', '==', petId)))
+    const reqSnap = await getDocs(reqQuery)
+
+    let reqData = []
+    reqSnap.forEach(req => {
+        const data = req.data()
+        data.id = req.id
+        reqData.push(data)
+    })
+
+    return reqData.length > 0 ? reqData[0] : null
+}
+
+export async function changeRequestStatus(reqId, status) {
+    const reqRef = doc(db, ADOPT_REQUESTS_COLLECTION, reqId)
+    await updateDoc(reqRef, {
+        status
     })
 }
 
@@ -262,8 +320,11 @@ export async function addLostPet(uid, image, name, animal, race, sex, size, desc
         })
 }
 
-export async function getLostPets() {
-    const petRef = query(collection(db, LOST_PETS_COLLECTION), and(where("deleted", "==", false), where("found", '==', false)))
+export async function getLostPets(uid) {
+    const petRef = query(collection(db, LOST_PETS_COLLECTION),
+        and(where("deleted", "==", false),
+            where("found", '==', false),
+            where("uid", '!=', uid)))
     const petSnap = await getDocs(petRef)
 
     let petData = []

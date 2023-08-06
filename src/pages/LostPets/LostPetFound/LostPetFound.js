@@ -56,8 +56,7 @@ function LostPetFound() {
 
         setToastData(['Mensaje enviado', 'Mensaje enviado con exito, se redirijira al chat con el dueño', 'success'])
         setShowToast(true)
-        navigate("/chat/" + petResponse)
-        setSending(false)
+        setTimeout(() => navigate("/chat/" + petResponse), 3000)
     }
 
     return (

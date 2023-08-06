@@ -66,8 +66,7 @@ function EditLost() {
 
         setToastData(['Mascota guardada', 'Su mascota ha sido modificada', 'success'])
         setShowToast(true)
-        navigate("..")
-        setSending(false)
+        setTimeout(()=>navigate(".."), 3000)
     }
 
     useEffect(() => {
@@ -77,7 +76,7 @@ function EditLost() {
             if (pet == null) {
                 setToastData(['Mascota no encontrada', 'No se ha encontrado la mascota solicitada', 'warning'])
                 setShowToast(true)
-                navigate("..")
+                setTimeout(()=>navigate(".."), 3000)
                 return
             }
 

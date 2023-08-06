@@ -18,12 +18,12 @@ export async function getUserByUID(uid) {
     return userSnap.exists() ? userSnap.data() : null
 }
 
-export async function addUser(uid, email, name, lastname, phone, imgUrl, providerId, providerImage) {
+export async function addUser(uid, email, name, lastName, phone, imgUrl, providerId, providerImage) {
     const data = {
         uid,
         email,
         name,
-        lastname,
+        lastName,
         phone,
         imgUrl,
         active: false,

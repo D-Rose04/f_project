@@ -9,7 +9,7 @@ function LostPetCard({ children, pet }) {
         id,
         uid,
         image,
-		name,
+        name,
         animal,
         race,
         sex,
@@ -42,6 +42,7 @@ function LostPetCard({ children, pet }) {
                 <Card.Body>
                     <div className='d-flex justify-content-between'>
                         <Link to={'' + id}><Card.Title style={{ fontSize: '18px' }}>{name}</Card.Title></Link>
+                        {found && <h5 className='text-success'>(Encontrado)</h5>}
                     </div>
                     <Card.Text className='d-flex flex-column mb-1' style={{ color: 'black' }}>
                         <span style={{ color: 'black', fontSize: '14px' }}>{animal}, {race}</span>

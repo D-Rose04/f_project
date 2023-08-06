@@ -100,7 +100,7 @@ function MainLayout () {
             <div className="">
               <div className="d-flex flex-row-reverse justify-content-between align-items-center">
                 <ProfilePicture pictureImg={user[0].imgUrl} profileUrl={"/profile/" + user[0].uid} />
-                <NotificationButton href={'#'} count={16} image={'notification'} />
+                {/* <NotificationButton href={'#'} count={16} image={'notification'} /> */}
                 <ChatNotification href={'/chat'} image={'chat'} />
               </div>
             </div>
