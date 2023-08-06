@@ -1,4 +1,6 @@
-import { createBrowserRouter } from "react-router-dom";
+import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { UseLoginContext } from './firebase/hooks/UseLogin'
 import MainLayout from "./layout/MainLayout";
 import Adopt from "./pages/Adopt/Adopt";
 import Social from "./pages/Social/Social";
@@ -6,80 +8,62 @@ import Profile from "./pages/Profile/Profile";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import Landing from "./pages/Landing/Landing";
-import Chat from "./pages/Chat/Chat";
-import MyPets from "./pages/MyPets/MyPets";
-import AddPet from "./pages/MyPets/AddPet/AddPet";
-import LostPets from "./pages/LostPets/LostPets";
-import AddLostPet from "./pages/LostPets/AddLostPet/AddLostPet";
-import LostPetDetails from "./pages/LostPets/LostPetDetails/LostPetDetails";
-import LostPetFound from "./pages/LostPets/LostPetFound/LostPetFound";
+import MyPets from './pages/MyPets/MyPets';
+import LostPets from './pages/LostPets/LostPets';
+import Chat from './pages/Chat/Chat';
+import ChatDetails from './pages/Chat/ChatDetails/ChatDetails';
+import AddPet from './pages/MyPets/AddPet/AddPet';
+import EditPet from './pages/MyPets/EditPet/EditPet';
+import Favorites from './pages/MyPets/Favorites/Favorites';
+import Lost from './pages/MyPets/Lost/Lost'
+import AddLost from './pages/MyPets/Lost/AddLost/AddLost';
+import EditLost from './pages/MyPets/Lost/EditLost/EditLost';
+import PetDetails from './pages/Adopt/PetDetails/PetDetails';
+import AdoptPet from './pages/Adopt/AdoptPet/AdoptPet';
+import LostPetDetails from './pages/LostPets/LostPetDetails/LostPetDetails';
+import LostPetFound from './pages/LostPets/LostPetFound/LostPetFound';
 
-const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <MainLayout />,
-        children: [
-            {
-                path: "/",
-                element: <Adopt />,
-                children: [],
-            },
-            {
-                path: "/my-pets",
-                element: <MyPets />,
-                children: [
-                    {
-                        path: "add-pet",
-                        element: <AddPet />
-                    }
-                ],
-            },
-            {
-                path: "/lost-pets",
-                element: <LostPets />,
-                children: [
-                    {
-                        path: "add-pet",
-                        element: <AddLostPet />
-                    }
-                ]
-            },
-            {
-                path: '/lost-pets/:petId',
-                element: <LostPetDetails />,
-                children: [
-                    {
-                        path:'found',
-                        element: <LostPetFound />
-                    }
-                ]
-            },
-            {
-                path: "/social",
-                element: <Social />
-            },
-            {
-                path: "/profile",
-                element: <Profile />
-            },
-            {
-                path: "/chat",
-                element: <Chat />
-            }
-        ],
-    },
-    {
-        path: "/landing",
-        element: <Landing />
-    },
-    {
-        path: "/login",
-        element: <Login />
-    },
-    {
-        path: "/register",
-        element: <Register />
-    }
-]);
+function Router() {
+  const { currUser } = UseLoginContext();
 
-export default router;
+  return (
+    <BrowserRouter>
+      <Routes>
+        {
+          currUser && currUser.uid ?
+            <Route path="/" element={<MainLayout />} children={[
+              <Route path="/" element={<Adopt />} />,
+              <Route path="/:petId" element={<PetDetails />} children={[
+                <Route path='adopt' element={<AdoptPet />} />,
+              ]} />,
+              // <Route path="/adopt-pet/:petId" element={<PetDetails />} />,
+              <Route path="/my-pets" element={<MyPets />} children={[
+                <Route path='add-pet' element={<AddPet />} />,
+                <Route path='edit-pet/:petId' element={<EditPet />} />,
+              ]} />,
+              <Route path='/my-pets/favorites' element={<Favorites />} />,
+              <Route path='/my-pets/lost-pets' element={<Lost />} children={[
+                <Route path='add-pet' element={<AddLost />} />,
+                <Route path='edit/:petId' element={<EditLost />} />,
+              ]} />,
+              <Route path='/my-pets/lost-pets/:petId' element={<LostPetDetails />} />,
+              <Route path="/lost-pets" element={<LostPets />} />,
+              <Route path="/lost-pets/:petId" element={<LostPetDetails />} children={[
+                <Route path='found' element={<LostPetFound />} />,
+              ]} />,
+              <Route path="/chat" element={<Chat />} />,
+              <Route path="/chat/:chatId" element={<ChatDetails />} />,
+              <Route path="/social" element={<Social />} />,
+              <Route path="/profile/:profileUID" element={<Profile />} />,
+            ]} />
+            : <Route path='/' element={<Landing />} />
+        }
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="*" element={<>No Match</>} />
+      </Routes>
+    </BrowserRouter>
+  )
+}
+
+export default Router

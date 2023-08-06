@@ -61,10 +61,9 @@ function Profile () {
         console.log( Exception );
       }
     }
-    setLoading( true );
-    loadData();
-    setLoading( false );
-  }, [profileUID] )
+
+    loadData()
+  }, [profileUID])
 
   const startChat = async () => {
     let chatId = await checkChatByUsers( currUser.uid, user[0].uid )

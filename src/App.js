@@ -15,17 +15,26 @@ import MyPets from './pages/MyPets/MyPets';
 import LostPets from './pages/LostPets/LostPets';
 import Chat from './pages/Chat/Chat';
 import ChatDetails from './pages/Chat/ChatDetails/ChatDetails';
-import Help from './pages/Help/Help';
+import AddPet from './pages/MyPets/AddPet/AddPet';
+import EditPet from './pages/MyPets/EditPet/EditPet';
+import Favorites from './pages/MyPets/Favorites/Favorites';
+import Lost from './pages/MyPets/Lost/Lost'
+import AddLost from './pages/MyPets/Lost/AddLost/AddLost';
+import EditLost from './pages/MyPets/Lost/EditLost/EditLost';
+import PetDetails from './pages/Adopt/PetDetails/PetDetails';
+import AdoptPet from './pages/Adopt/AdoptPet/AdoptPet';
+import LostPetDetails from './pages/LostPets/LostPetDetails/LostPetDetails';
+import LostPetFound from './pages/LostPets/LostPetFound/LostPetFound';
+import Router from './Router';
 
-export default function App () {
-  const { currUser } = UseLoginContext();
+export default function App() {
   const { loading, setLoading } = UseLoadingContext();
 
-  useEffect( () => {
-    setTimeout( () => {
-      setLoading( false );
-    }, 1500 );
-  }, [] );
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+  }, []);
 
   return (
     <>
@@ -38,27 +47,7 @@ export default function App () {
             aria-label="Loading Spinner"
             data-testid="loader" />
         </div>
-        : <BrowserRouter>
-          <Routes>
-            {
-              currUser && currUser.uid ?
-                <Route path="/" element={<MainLayout />} children={[
-                  <Route path="/" element={<Adopt />} />,
-                  <Route path="/my-pets" element={<MyPets />} />,
-                  <Route path="/lost-pets" element={<LostPets />} />,
-                  <Route path="/chat" element={<Chat />} />,
-                  <Route path="/chat/:chatId" element={<ChatDetails />} />,
-                  <Route path="/social" element={<Social />} />,
-                  <Route path="/profile/:profileUID" element={<Profile />} />,
-                  <Route path="/help" element={<Help />} />,
-                ]} />
-                : <Route path='/' element={<Landing />} />
-            }
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="*" element={<>No Match</>} />
-          </Routes>
-        </BrowserRouter>
+        : <Router />
       }
     </>
   )

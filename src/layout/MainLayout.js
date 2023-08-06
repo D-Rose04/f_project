@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Logo from '../components/layout/Logo/Logo'
 import NavigationLink from '../components/layout/NavigationLink/NavigationLink'
 import NotificationButton from '../components/layout/NotificationButton/NotificationButton'
-import { Link, Outlet, useNavigate, useParams } from 'react-router-dom'
+import { Link, Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
 import ProfilePicture from '../components/layout/ProfilePicture/ProfilePicture'
 import { UseLoadingContext } from '../firebase/hooks/UseLoading'
 import { UseLoginContext } from '../firebase/hooks/UseLogin'
@@ -21,6 +21,7 @@ function MainLayout () {
   
   const { loading, setLoading } = UseLoadingContext()
   const { currUser,getUser } = UseLoginContext()
+  const location = useLocation()
 
   const layoutRowRef = useRef()
   const layoutContentRef = useRef()
@@ -52,15 +53,26 @@ function MainLayout () {
 
   useEffect( () => setSidebarWidth( sidebarRef.current.offsetWidth ), [sidebarCols] )
 
-  useEffect( () => {
-    sidebarContentRef.current.style.paddingLeft = title == "Chat" ? "0" : sidebarContentRef.current.style.paddingRight;
+  useEffect(() => setSidebarWidth(sidebarRef.current.offsetWidth), [sidebarCols])
 
+  useEffect(() => {
     const chatContainer = layoutRowRef.current;
-    chatContainer.scrollTop = title == "Chat" ? chatContainer.scrollHeight : 0;
+    const path = location.pathname
+    if (path.includes("/chat") || path.includes("/my-pets")) {
+      sidebarContentRef.current.style.paddingLeft = "0"
+      chatContainer.scrollTop = chatContainer.scrollHeight
+      layoutContentRef.current.style.marginRight = "0"
+    } else {
+      sidebarContentRef.current.style.paddingLeft = sidebarContentRef.current.style.paddingRight;
+      chatContainer.scrollTop = 0;
+      layoutContentRef.current.style.marginRight = layoutContentRef.current.style.marginLeft
+    }
 
-    layoutContentRef.current.style.marginRight = title == "Chat" ? "0" : layoutContentRef.current.style.marginLeft
-    layoutContentRef.current.style.backgroundColor = title == "Chat" ? "var(--color-wisteria)" : "var(--color-thistle)"
-  }, [title] )
+    if (path.includes("/chat")) {
+      layoutContentRef.current.style.backgroundColor = "var(--color-wisteria)"
+    }
+
+  }, [location])
 
   return (
     <div className="container-fluid h-100 bg-indigo">
@@ -89,7 +101,7 @@ function MainLayout () {
               <div className="d-flex flex-row-reverse justify-content-between align-items-center">
                 <ProfilePicture pictureImg={user[0].imgUrl} profileUrl={"/profile/" + user[0].uid} />
                 <NotificationButton href={'#'} count={16} image={'notification'} />
-                <ChatNotification href={'/chat'} count={9} image={'chat'} />
+                <ChatNotification href={'/chat'} image={'chat'} />
               </div>
             </div>
           </div>
