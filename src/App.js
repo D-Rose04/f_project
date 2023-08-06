@@ -15,6 +15,7 @@ import MyPets from './pages/MyPets/MyPets';
 import LostPets from './pages/LostPets/LostPets';
 import Chat from './pages/Chat/Chat';
 import ChatDetails from './pages/Chat/ChatDetails/ChatDetails';
+import Help from './pages/Help/Help';
 
 export default function App () {
   const { currUser } = UseLoginContext();
@@ -49,6 +50,7 @@ export default function App () {
                   <Route path="/chat/:chatId" element={<ChatDetails />} />,
                   <Route path="/social" element={<Social />} />,
                   <Route path="/profile/:profileUID" element={<Profile />} />,
+                  <Route path="/help" element={<Help />} />,
                 ]} />
                 : <Route path='/' element={<Landing />} />
             }

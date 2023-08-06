@@ -23,7 +23,7 @@ export default function Nav () {
             el.classList.add( 'menu-item' );
             el.addEventListener( 'click', setShow );
         } );
-        console.log( allWithClass );
+        
     }
 
     const handleLogOut = () => {

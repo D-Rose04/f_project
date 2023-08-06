@@ -62,11 +62,6 @@ function MainLayout () {
     layoutContentRef.current.style.backgroundColor = title == "Chat" ? "var(--color-wisteria)" : "var(--color-thistle)"
   }, [title] )
 
-  const algo = () => {
-    console.log( "bottom:", layoutRowRef.current.scrollBottom )
-    console.log( "height:", layoutRowRef.current.scrollHeight )
-  }
-
   return (
     <div className="container-fluid h-100 bg-indigo">
       <div className="row h-100">

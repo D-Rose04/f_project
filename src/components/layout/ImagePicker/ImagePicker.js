@@ -13,7 +13,7 @@ export default function ImagePicker ( { className, title, name, controlId, width
     }, [image] );
 
     function onImageChange ( e ) {
-        // console.log(e.target.files)
+
         setImage( e.target.files[0] );
         onImageSet( e.target.files[0] )
     }

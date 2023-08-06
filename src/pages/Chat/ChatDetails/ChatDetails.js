@@ -74,7 +74,6 @@ function ChatDetails() {
         }
 
         if (chatId && currUser.uid && contactUID) {
-            console.log("asdfghjklñ")
             checkMessagesSeen()
         }
 

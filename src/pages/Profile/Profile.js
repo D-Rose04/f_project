@@ -54,7 +54,6 @@ function Profile () {
 
         setImage( userData.imgUrl );
         const userArr = [userData];
-        console.log( userArr[0] );
         await setUser( userArr );
         await setUserInfo( userArr[0] );
       }
@@ -96,7 +95,6 @@ function Profile () {
   };
 
   const handleChangePwd = () => {
-    console.log( "ASdasd" )
     setChangePassword( true );
   };
 

@@ -34,7 +34,6 @@ function ChatInput({ layoutContentRef }) {
 
     useEffect(() => {
         setInputWidth(layoutContentRef.current.offsetWidth)
-        console.log(chatInputRef)
     }, [inputWidth, layoutContentRef.current?.offsetWidth])
 
     const handleKey = (e) => {

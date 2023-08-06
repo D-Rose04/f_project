@@ -37,7 +37,6 @@ function Register () {
 
     const formSubmit = e => {
         e.preventDefault()
-        console.log( "noc" )
         handleSubmit()
     }
 
