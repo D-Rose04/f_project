@@ -7,7 +7,7 @@ function PostSidebar() {
     return (
         <>
             {/* <Button variant='primary' onClick={() => navigate('/my-pets/add-pet')}>Agregar</Button> */}
-            <PostLink onClick={() => navigate('add-post')}>Nuevo Post</PostLink>
+            <PostLink onClick={() => navigate('social/add-post')}>Nuevo Post</PostLink>
         </>
     )
 }
