@@ -4,6 +4,7 @@ import Post from '../../components/app/Post/Post'
 import AddPostPage from '../Social/CRUD/AddPost/AddPost'
 import { addPosts, getPosts} from '../../firebase/context/Database/PostsContext'
 import { Button } from 'react-bootstrap'
+import PostSidebar from '../../components/app/Post/PostSidebar'
 
 function Social() {
   const [setTitle, setSidebar, setSidebarCols]=useOutletContext()
@@ -13,10 +14,7 @@ function Social() {
   useEffect(() => {
     setTitle("Social")
     setSidebarCols(2)
-    setSidebar(<>
-    <h5 className='text-dark'>Social sidebar</h5>
-    <Button variant='primary' onClick={()=>navigate('add-post')}>Agregar</Button>
-    </>)
+    setSidebar(<PostSidebar />)
     
     const fetchPosts = async () => {
       const getpost = await getPosts();
