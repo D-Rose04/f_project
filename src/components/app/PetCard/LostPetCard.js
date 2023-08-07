@@ -23,22 +23,13 @@ function LostPetCard({ children, pet }) {
         deleted,
         found
     } = pet
-
-    const [imageUrl, setImageUrl] = useState("")
+    
     const { currUser } = UseLoginContext()
-
-    useEffect(() => {
-        async function loadImg() {
-            setImageUrl(await getURL(image))
-        }
-
-        loadImg()
-    }, [])
 
     return (
         <div className="col">
             <Card bg={deleted ? 'secondary' : null}>
-                <Link to={'' + id}><Card.Img className='object-fit-cover' variant="top" height={180} src={imageUrl} /></Link>
+                <Link to={'' + id}><Card.Img className='object-fit-cover' variant="top" height={180} src={image} /></Link>
                 <Card.Body>
                     <div className='d-flex justify-content-between'>
                         <Link to={'' + id}><Card.Title style={{ fontSize: '18px' }}>{name}</Card.Title></Link>

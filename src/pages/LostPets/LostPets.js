@@ -51,17 +51,21 @@ function LostPets() {
     <div className='row h-100 d-flex justify-content-center align-items-center'>
       <UseAnimations animation={loading} size={100} strokeColor='white' />
     </div> :
-    <div className="row row-cols-2 row-cols-lg-3 row-cols-xl-4 g-2 py-1">
-      {lostPets.map(p => <LostPetCard key={p.id} pet={p}>
-        <Dropdown className='ms-3'>
-          <Dropdown.Toggle variant="success" id="dropdown-basic" as={MoreButton} />
-          <Dropdown.Menu>
-            <Dropdown.Item className='text-dark' onClick={() => navigate("" + p.id)}>Detalles</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-      </LostPetCard>)}
-      <Outlet />
-    </div>
+    lostPets.length > 0 ?
+      <div className="row row-cols-2 row-cols-lg-3 row-cols-xl-4 g-2 py-1">
+        {lostPets.map(p => <LostPetCard key={p.id} pet={p}>
+          <Dropdown className='ms-3'>
+            <Dropdown.Toggle variant="success" id="dropdown-basic" as={MoreButton} />
+            <Dropdown.Menu>
+              <Dropdown.Item className='text-dark' onClick={() => navigate("" + p.id)}>Detalles</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </LostPetCard>)}
+        <Outlet />
+      </div> :
+      <div className='row h-100 d-flex justify-content-center align-items-center'>
+        <h4 className='text-white text-center'>No se encontraron animales</h4>
+      </div>
   )
 }
 

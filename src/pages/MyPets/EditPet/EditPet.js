@@ -114,7 +114,7 @@ function EditPet() {
                 console.log('La variable no es un array ni un objeto.');
             }
 
-            setImage(await getURL(pet.image))
+            setImage(pet.image)
 
             setPetData({ ...pet, imageBucket: pet.image, image: null })
             setLoading(false)

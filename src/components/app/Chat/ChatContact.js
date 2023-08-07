@@ -12,14 +12,7 @@ function ChatContact({ chat }) {
 
     const [hover, setHover] = useState(false)
     const [open, setOpen] = useState(false)
-    const [imgUrl, setImgUrl] = useState("")
     const { chatId } = useParams()
-
-    useEffect(() => {
-        getURL(picture).then((url) => {
-            setImgUrl(url)
-        })
-    }, [])
 
     useEffect(() => {
         setOpen(id == chatId)
@@ -34,7 +27,7 @@ function ChatContact({ chat }) {
     return (
         <Link className='text-decoration-none' to={open ? "/chat" : ("/chat/" + id)}>
             <div className={'bg-indigo d-flex justify-content-between align-items-center p-1 mb-1' + contactClass} style={contactStyle} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-                <img className={'img-fluid rounded-circle object-fit-cover'} width={35} height={35} style={styles.contactImg} src={imgUrl} />
+                <img className={'img-fluid rounded-circle object-fit-cover'} width={35} height={35} style={styles.contactImg} src={picture} />
                 <span className={'flex-grow-1 ms-2 text-decoration-none'}>{name} {lastName}</span>
                 <span className={''} style={styles.contactDate}>{formatDate(sentAt)}</span>
                 {!seen && uidSent != currUser.uid ? <AiFillMessage className='ms-1' /> : null}

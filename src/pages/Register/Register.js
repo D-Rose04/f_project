@@ -37,7 +37,6 @@ function Register () {
 
     const formSubmit = e => {
         e.preventDefault()
-        console.log( "noc" )
         handleSubmit()
     }
 
@@ -149,7 +148,8 @@ function Register () {
                                     id="txtPhone"
                                     placeholder="Telefono"
                                     required
-                                    onInput={( e ) => setPhone( e.target.value )}
+                                    onChangeCapture={( e ) => {setPhone( e.target.value ); console.log(e.target.value)}}
+                                    maxLength={15}
                                 />
                             )}
                         </ReactInputMask>

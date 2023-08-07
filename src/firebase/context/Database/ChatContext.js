@@ -58,7 +58,7 @@ export async function createChat(currUID, contactUID) {
         [newChat.id]: {
             name: contactUser.name,
             lastName: contactUser.lastName,
-            picture: contactUser.picture,
+            picture: contactUser.imgUrl,
             lastMessage: '',
             sentAt: serverTimestamp(),
             seen: false,
@@ -72,7 +72,7 @@ export async function createChat(currUID, contactUID) {
         [newChat.id]: {
             name: currUser.name,
             lastName: currUser.lastName,
-            picture: currUser.picture,
+            picture: currUser.imgUrl,
             lastMessage: '',
             sentAt: serverTimestamp(),
             seen: false,
@@ -118,7 +118,6 @@ export async function sendMessage(uid, text, chatId) {
 export async function sendMessageWithImage(uid, text, image, chatId) {
     // const messagesQuery = query(collection(db, CHATS_COLLECTION), chatId);
     const time = Timestamp.now()
-    console.log(time)
     const imgBucket = await uploadMessagePicture(image, chatId, uid, time)
     const chatRef = doc(db, CHATS_COLLECTION, chatId);
     const data = {

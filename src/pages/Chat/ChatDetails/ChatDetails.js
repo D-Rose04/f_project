@@ -56,8 +56,7 @@ function ChatDetails() {
 
             const loadImg = async () => {
                 const userChatData = await loadUserChat(currUser.uid)
-                const contactImg = userChatData[chatId].picture
-                setContactImg(await getURL(contactImg))
+                setContactImg(userChatData[chatId].picture)
             }
 
             loadImg()
@@ -74,16 +73,14 @@ function ChatDetails() {
         }
 
         if (chatId && currUser.uid && contactUID) {
-            console.log("asdfghjklñ")
             checkMessagesSeen()
         }
 
     }, [messages]);
 
-    const showImageModal = async (imgBucket) => {
+    const showImageModal = async (imgUrl) => {
         setShowModal(true)
-        const url = await getURL(imgBucket)
-        setModalImgUrl(url)
+        setModalImgUrl(imgUrl)
     }
 
     const handleHideModal = () => {

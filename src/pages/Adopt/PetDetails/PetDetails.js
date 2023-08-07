@@ -16,7 +16,6 @@ function PetDetails() {
     const [favorite, setFavorite] = useState()
     const [pet, setPet] = useState({})
     const [requests, setRequests] = useState([])
-    const [imageUrl, setImageUrl] = useState(null)
     const [loadingPet, setLoadingPet] = useState(true)
     const [loadingRequests, setLoadingRequests] = useState(true)
     const [adopting, setAdopting] = useState(false)
@@ -91,7 +90,6 @@ function PetDetails() {
         }
         petData.time = time
 
-        setImageUrl(await getURL(petData.image))
         setFavorite(userData.favoritePets.includes(petId))
         setPet(petData)
         setLoadingPet(false)
@@ -145,7 +143,7 @@ function PetDetails() {
                 <>
                     <div className='d-flex flex-column flex-lg-row py-2 gap-1'>
                         <div className='flex-grow-1' style={styles.petImg}>
-                            <img className='object-fit-contain rounded-3' src={imageUrl} style={{ width: '100%', height: attrRef?.current?.offsetHeight }} />
+                            <img className='object-fit-contain rounded-3' src={pet.image} style={{ width: '100%', height: attrRef?.current?.offsetHeight }} />
                         </div>
                         <div className='flex-shrink-1 d-flex flex-column justify-content-between bg-wisteria pt-3 rounded-3 p-3' ref={attrRef} style={{ height: 'fit-content' }}>
                             <div className='d-flex align-items-center mb-2'>

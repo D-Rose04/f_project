@@ -9,23 +9,11 @@ function Message({ message, lastMessage, img, onShowImage, onImageLoad }) {
 
     const [mine, setMine] = useState(false)
     const [lastMine, setLastMine] = useState(false)
-    const [imgUrl, setImgUrl] = useState("")
 
     useEffect(() => {
         setMine(uid == authContext.currUser.uid)
         setLastMine(uid == lastMessage.uid)
     }, [])
-
-    useEffect(() => {
-        const loadImage = async () => {
-            const url = await getURL(image)
-            setImgUrl(url)
-        }
-
-        if (image) {
-            loadImage()
-        }
-    }, [image])
 
     return (
         <>
@@ -33,7 +21,7 @@ function Message({ message, lastMessage, img, onShowImage, onImageLoad }) {
                 <div className={"message d-flex flex-row-reverse ps-2 " + (lastMine ? "mt-1" : "mt-2")}>
                     <div className='message-body bg-white rounded-2 ms-1 p-2'>
                         {image ? <div className='message-img-container pb-1'>
-                            <img className='message-img img-fluid rounded-2' src={imgUrl} onLoad={onImageLoad} onClick={() => onShowImage(image)} />
+                            <img className='message-img img-fluid rounded-2' src={image} onLoad={onImageLoad} onClick={() => onShowImage(image)} />
                         </div> : null}
                         <div className="message-text ps-1 d-flex align-items-end flex-wrap justify-content-end">
                             <p className="m-0 text-dark">
@@ -55,7 +43,7 @@ function Message({ message, lastMessage, img, onShowImage, onImageLoad }) {
                     </div>
                     <div className='message-body bg-indigo rounded-2 ms-1 p-2'>
                         {image ? <div className='message-img-container pb-1'>
-                            <img className='message-img img-fluid rounded-2' src={imgUrl} onLoad={onImageLoad} onClick={() => onShowImage(image)} />
+                            <img className='message-img img-fluid rounded-2' src={image} onLoad={onImageLoad} onClick={() => onShowImage(image)} />
                         </div> : null}
                         <div className="message-text ps-2 d-flex align-items-end flex-wrap justify-content-end">
                             <p className="m-0">

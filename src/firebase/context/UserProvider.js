@@ -29,7 +29,7 @@ export default function UserProvider ( { children } ) {
 
     const value = {
         UpdateUser,
-        uploadProfilePicture
+        uploadProfilePicture    
     };
 
     return (

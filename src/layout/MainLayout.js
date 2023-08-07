@@ -86,7 +86,7 @@ function MainLayout () {
             <NavigationLink href={"/lost-pets"} icon={"lost"} className={"d-flex align-items-center"}>Mascotas Perdidas</NavigationLink>
             <NavigationLink href={"/my-pets"} icon={"my-pets"} className={"d-flex align-items-center"}>Mis Mascotas</NavigationLink>
             <NavigationLink href={"/social "} icon={"social"} className={"d-flex align-items-center"}>Social</NavigationLink>
-            <NavigationLink href={"/"} icon={"help"} className={"d-flex align-items-center"}>Ayuda</NavigationLink>
+            <NavigationLink href={"/help"} icon={"help"} className={"d-flex align-items-center"}>Ayuda</NavigationLink>
             <NavigationLink href={"/"} icon={"settings"} className={"d-flex align-items-center mt-auto mb-2"}>Configuracion</NavigationLink>
           </div>
 

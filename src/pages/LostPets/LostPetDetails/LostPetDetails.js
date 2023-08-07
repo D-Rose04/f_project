@@ -11,7 +11,6 @@ import { getURL } from '../../../firebase/context/StorageContext'
 
 function LostPetDetails() {
   const [lostPet, setLostPet] = useState({})
-  const [imageUrl, setImageUrl] = useState(null)
   const [loadingPet, setLoadingPet] = useState(true)
   const [sending, setSending] = useState(false)
 
@@ -34,7 +33,6 @@ function LostPetDetails() {
       return
     }
 
-    setImageUrl(await getURL(petData.image))
     setLostPet(petData)
     setLoadingPet(false)
   }
@@ -70,7 +68,7 @@ function LostPetDetails() {
         <>
           <div className='d-flex flex-column flex-lg-row py-2 gap-1'>
             <div className='' style={styles.petImg}>
-              <img className='img-fluid rounded-3' width="100%" src={imageUrl} />
+              <img className='img-fluid rounded-3' width="100%" src={lostPet.image} />
             </div>
             <div className='d-flex flex-column justify-content-between bg-wisteria pt-3 rounded-3 p-3' style={styles.petImg}>
               <div className='d-flex align-items-center mb-2'>

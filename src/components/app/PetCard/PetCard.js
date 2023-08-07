@@ -25,7 +25,6 @@ function PetCard({ children, pet, isFavorite }) {
     } = pet
 
     const [favorite, setFavorite] = useState(isFavorite)
-    const [imageUrl, setImageUrl] = useState("")
     const favImage = require(favorite ? "./../../../img/icons/heart-fill.png" : "./../../../img/icons/heart-empty.png");
     const { currUser } = UseLoginContext()
 
@@ -46,18 +45,10 @@ function PetCard({ children, pet, isFavorite }) {
         setFavorite(!favorite)
     }
 
-    useEffect(() => {
-        async function loadImg() {
-            setImageUrl(await getURL(image))
-        }
-
-        loadImg()
-    }, [])
-
     return (
         <div className="col">
             <Card bg={deleted ? 'secondary' : null}>
-                <Link to={'' + id}><Card.Img className='object-fit-cover' variant="top" height={180} src={imageUrl} /></Link>
+                <Link to={'' + id}><Card.Img className='object-fit-cover' variant="top" height={180} src={image} /></Link>
                 <Card.Body>
                     <div className='d-flex justify-content-between'>
                         <Link to={'' + id}><Card.Title style={{ fontSize: '18px' }}>{name}{adopted && ' (Adoptado)'}</Card.Title></Link>

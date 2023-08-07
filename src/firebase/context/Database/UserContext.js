@@ -5,9 +5,7 @@ const USERS_COLLECTION = 'users'
 
 export async function checkEmail(email) {
     const emailQuery = query(collection(db, USERS_COLLECTION), where("email", "==", email));
-
     const emailSnapshot = await getDocs(emailQuery);
-    // console.log(emailSnapshot.docs)
     return emailSnapshot.docs.length > 0
     //Sin terminar
 }
