@@ -86,8 +86,7 @@ function EditPet() {
 
         setToastData(['Mascota guardada', 'Mascota guardada con exito', 'success'])
         setShowToast(true)
-        navigate("..")
-        setSending(false)
+        setTimeout(()=>navigate(".."), 3000)
     }
 
     useEffect(() => {
@@ -97,8 +96,7 @@ function EditPet() {
             if (pet == null) {
                 setToastData(['Mascota no encontrada', 'No se ha encontrado la mascota solicitada', 'warning'])
                 setShowToast(true)
-                navigate("..")
-                return
+                setTimeout(()=>navigate(".."), 3000)
             }
 
             const provRes = await fetch("https://api.digital.gob.do/v1/territories/provinces")
@@ -116,7 +114,7 @@ function EditPet() {
                 console.log('La variable no es un array ni un objeto.');
             }
 
-            setImage(await getURL(pet.image))
+            setImage(pet.image)
 
             setPetData({ ...pet, imageBucket: pet.image, image: null })
             setLoading(false)

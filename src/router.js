@@ -22,6 +22,7 @@ import PetDetails from './pages/Adopt/PetDetails/PetDetails';
 import AdoptPet from './pages/Adopt/AdoptPet/AdoptPet';
 import LostPetDetails from './pages/LostPets/LostPetDetails/LostPetDetails';
 import LostPetFound from './pages/LostPets/LostPetFound/LostPetFound';
+import RequestDetails from './pages/MyPets/RequestDetails/RequestDetails';
 import AddPost from "./pages/Social/CRUD/AddPost/AddPost";
 import Help from  "./pages/Help/Help";
 
@@ -42,6 +43,9 @@ function Router() {
               <Route path="/my-pets" element={<MyPets />} children={[
                 <Route path='add-pet' element={<AddPet />} />,
                 <Route path='edit-pet/:petId' element={<EditPet />} />,
+              ]} />,
+              <Route path='/my-pets/:petId' element={<PetDetails />} children={[
+                <Route path='request/:requestId' element={<RequestDetails />} />,
               ]} />,
               <Route path='/my-pets/favorites' element={<Favorites />} />,
               <Route path='/my-pets/lost-pets' element={<Lost />} children={[

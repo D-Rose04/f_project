@@ -1,6 +1,8 @@
 :root {
     --color-indigo: #A084DC;
     --color-wisteria: #BFACE2;
+    --color-wisteria-d: #a883ec;
+    --color-wisteria-l: #cbbee4;
     --color-thistle: #EBC7E6;
     --color-thistle-l: #fdcef7;
     --color-thistle-d: #dda0d5;
@@ -168,4 +170,35 @@ body {
     --bs-btn-disabled-color: #fff;
     --bs-btn-disabled-bg: var(--color-thistle-l);
     --bs-btn-disabled-border-color: var(--color-thistle-l);
+  }
+
+  .btn-secondary {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: var(--color-wisteria);
+    --bs-btn-border-color: var(--color-wisteria);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: var(--color-wisteria-l); 
+    --bs-btn-hover-border-color: var(--color-wisteria-l);
+    --bs-btn-focus-shadow-rgb: 49, 132, 253;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: var(--color-wisteria-d);
+    --bs-btn-active-border-color: var(--color-wisteria-d);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: #fff;
+    --bs-btn-disabled-bg: var(--color-wisteria-l);
+    --bs-btn-disabled-border-color: var(--color-wisteria-l);
+  }
+
+  .table-primary {
+    --bs-table-color: var(--color-white);
+    --bs-table-bg: var(--color-sblue);
+    --bs-table-border-color: var(--color-sblue-d);
+    --bs-table-striped-bg: var(--color-sblue-l);
+    --bs-table-striped-color: var(--color-white);
+    --bs-table-active-bg: #bacbe6;
+    --bs-table-active-color: var(--color-white);
+    --bs-table-hover-bg: var(--color-sblue-d);
+    --bs-table-hover-color: var(--color-white);
+    color: var(--bs-table-color);
+    border-color: var(--bs-table-border-color);
   }

@@ -19,28 +19,28 @@ export async function uploadProfilePicture(image, uid){
     const bucket = `${BUCKET_URL}/${PROFILE_FOLDER}/${uid}.jpg`;
     const storageRef=ref(storage, bucket)
     await uploadBytes(storageRef, image)
-    return bucket
+    return await getURL(bucket)
 }
 
 export async function uploadMessagePicture(image, chatId, uid, time){
     const bucket = `${BUCKET_URL}/${MESSAGES_MULTIMEDIA_FOLDER}/${chatId}/${uid}_${time}.jpg`;
     const storageRef=ref(storage, bucket)
     await uploadBytes(storageRef, image)
-    return bucket
+    return await getURL(bucket)
 }
 
 export async function uploadPetPicture(image, uid, petId){
     const bucket = `${BUCKET_URL}/${PETS_FOLDER}/${uid}/${petId}.jpg`;
     const storageRef=ref(storage, bucket)
     await uploadBytes(storageRef, image)
-    return bucket
+    return await getURL(bucket)
 }
 
 export async function uploadLostPetPicture(image, uid, petId){
     const bucket = `${BUCKET_URL}/${LOST_PETS_FOLDER}/${uid}/${petId}.jpg`;
     const storageRef=ref(storage, bucket)
     await uploadBytes(storageRef, image)
-    return bucket
+    return await getURL(bucket)
 }
 
 // Replaces existing image in storage and returns the storage bucket

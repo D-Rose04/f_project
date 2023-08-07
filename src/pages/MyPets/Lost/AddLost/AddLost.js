@@ -71,8 +71,7 @@ function AddLost() {
 
         setToastData(['Mascota guardada', 'Se ha publicado su mascota', 'success'])
         setShowToast(true)
-        navigate("..")
-        setSending(false)
+        setTimeout(()=>navigate(".."), 3000)
     }
 
     useEffect(() => {

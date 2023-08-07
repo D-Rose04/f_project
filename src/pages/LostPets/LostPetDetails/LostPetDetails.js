@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
-import { Link, Outlet, useOutletContext, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useOutletContext, useNavigate, useLocation } from 'react-router-dom'
 import styles from './LostPetDetails.styles'
 import { Button } from 'react-bootstrap'
 import UseAnimations from 'react-useanimations'
@@ -11,13 +11,13 @@ import { getURL } from '../../../firebase/context/StorageContext'
 
 function LostPetDetails() {
   const [lostPet, setLostPet] = useState({})
-  const [imageUrl, setImageUrl] = useState(null)
   const [loadingPet, setLoadingPet] = useState(true)
   const [sending, setSending] = useState(false)
 
   const [setTitle, setSidebar] = useOutletContext()
   const { petId } = useParams()
   const { currUser } = UseLoginContext()
+  const location = useLocation()
 
   const navigate = useNavigate()
 
@@ -33,7 +33,6 @@ function LostPetDetails() {
       return
     }
 
-    setImageUrl(await getURL(petData.image))
     setLostPet(petData)
     setLoadingPet(false)
   }
@@ -47,7 +46,7 @@ function LostPetDetails() {
 
   useEffect(() => {
     setTitle("Animal Perdido")
-    setSidebar(<Link className='text-decoration-none' to='/lost-pets'>
+    setSidebar(<Link className='text-decoration-none' to={location.pathname.includes('my-pets') ? '/my-pets/lost-pets' : '/lost-pets'}>
       <div className={'bg-indigo d-flex justify-content-start align-items-center p-1 mb-1 ms-1 rounded-5'} style={{ backgroundColor: 'var(--color-thistle-d)' }}>
         <span className={'flex-grow-1 ms-2 text-decoration-none'}>Volver</span>
       </div>
@@ -69,7 +68,7 @@ function LostPetDetails() {
         <>
           <div className='d-flex flex-column flex-lg-row py-2 gap-1'>
             <div className='' style={styles.petImg}>
-              <img className='img-fluid rounded-3' width="100%" src={imageUrl} />
+              <img className='img-fluid rounded-3' width="100%" src={lostPet.image} />
             </div>
             <div className='d-flex flex-column justify-content-between bg-wisteria pt-3 rounded-3 p-3' style={styles.petImg}>
               <div className='d-flex align-items-center mb-2'>
