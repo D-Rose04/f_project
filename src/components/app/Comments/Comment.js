@@ -3,7 +3,7 @@ import { formatDate } from '../../../firebase/hooks/CommonHooks'
 
 function Comment({ user, time, body }) {
 
-    // const getCommentDate = t => `${t.getDate()}/${t.getMonth()}/${t.getFullYear()} ${t.getHours()}:${t.getMinutes()}`
+    const getCommentDate = t => `${t.getDate()}/${t.getMonth()}/${t.getFullYear()} ${t.getHours()}:${t.getMinutes()}`
 
     return (
         <div className="comment-response d-flex ps-2 mt-2">

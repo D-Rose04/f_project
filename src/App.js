@@ -2,7 +2,7 @@ import './App.css';
 import React, { useEffect } from 'react';
 import { BounceLoader } from 'react-spinners';
 import { UseLoadingContext } from './firebase/hooks/UseLoading'
-import Router from './Router'
+import Router from './router'
 
 export default function App() {
   const { loading, setLoading } = UseLoadingContext();

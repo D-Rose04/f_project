@@ -4,16 +4,14 @@ import CommentList from '../Comments/CommentList'
 import CommentInput from '../Comments/CommentInput';
 import { formatDate } from '../../../firebase/hooks/CommonHooks'
 import { getURL } from '../../../firebase/context/StorageContext'
-import { likePost, dislikePost, POSTS_COLLECTION } from "../../../firebase/context/Database/PostsContext";
+import { likePost, dislikePost, addCommentToPost } from "../../../firebase/context/Database/PostsContext";
 import { loginContext } from "../../../firebase/context/LoginContext"
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { onSnapshot, doc } from "@firebase/firestore";
-import { db } from "../../../firebase/config/config-firebase"
-
+import { serverTimestamp } from "firebase/firestore"; 
 
 function Post ( { post } ) {
-    const { id, comments, postBody, postImage, user, time } = post;
+    const { id, postBody, postImage, user, time, comments } = post;
     const { image } = user
 
     const [userImg, setUserImg] = useState( '' )
@@ -23,6 +21,8 @@ function Post ( { post } ) {
 
     const [likesCount, setLikesCount] = useState( post.likes ); // Estado para el conteo de likes
     const [dislikesCount, setDislikesCount] = useState( post.dislikes ); // Estado para el conteo de dislikes
+
+    // const [comments, setComments] = useState( post.comments );
 
     const uid = authContext.currUser.uid;
 
@@ -43,19 +43,7 @@ function Post ( { post } ) {
 
     };
 
-    //   useEffect(() => {
-    //     // Crea una suscripción para recibir los cambios en el documento del post
-    //     const unsubscribe = onSnapshot(doc(db, POSTS_COLLECTION, post.id), (snapshot) => {
-    //       const updatedPost = snapshot.data();
-    //       setLikesCount(updatedPost.likes); // Actualiza el estado local con los nuevos likes
-    //       setDislikesCount(updatedPost.dislikes); // Actualiza el estado local con los nuevos dislikes
-    //     });
-
-    //     // Retorna una función de limpieza para cancelar la suscripción cuando el componente se desmonte
-    //     return () => unsubscribe();
-    //   }, [post.id]);
-
-
+    
     useEffect( () => {
 
         const cargarImagenes = async () => {
@@ -136,7 +124,7 @@ function Post ( { post } ) {
                 <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop closeOnClick rtl pauseOnFocusLoss draggable pauseOnHover />
             </div>
             <hr className=" my-3" />
-            <CommentInput user={user} postId={id} />
+            <CommentInput  user={user} postId={id} />
             {comments.length > 0 &&
                 <CommentList postId={id} comments={comments} />}
         </div>
