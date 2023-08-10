@@ -90,7 +90,7 @@ function Landing() {
             </div>
             
         </div>
-        <div className="fourthContainer">
+        {/* <div className="fourthContainer">
             <div className='d-flex flex-row justify-content-center mt-5 mb-5'>
                 <h3 className='fourthContainerTitle'>Mascotas para Adoptar</h3>
             </div>
@@ -123,8 +123,8 @@ function Landing() {
                     </div>
                 </div>
             </div>
-        </div>
-        <div className='lastContainer bg-indigo' style={{minHeight: '40vh'}}>
+        </div> */}
+        <div className='lastContainer bg-wisteria' style={{minHeight: '40vh'}}>
             <div className='lastContainerGrid mx-5'>
                 <div className='lastContainerGridInfo mt-1'>
 
