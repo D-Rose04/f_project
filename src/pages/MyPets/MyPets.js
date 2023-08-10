@@ -36,7 +36,7 @@ function MyPets() {
   }
 
   useEffect(() => {
-    setTitle("Mis mascotas")
+    setTitle("Mis mascotas para adoptar")
     setSidebar(<MyPetsSidebar />)
     setSidebarCols(2)
 
