@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { Link, Outlet, useOutletContext, useNavigate, useLocation } from 'react-router-dom'
 import styles from './LostPetDetails.styles'
@@ -18,6 +18,7 @@ function LostPetDetails() {
   const { petId } = useParams()
   const { currUser } = UseLoginContext()
   const location = useLocation()
+  const attrRef = useRef()
 
   const navigate = useNavigate()
 
@@ -67,10 +68,10 @@ function LostPetDetails() {
         </div> :
         <>
           <div className='d-flex flex-column flex-lg-row py-2 gap-1'>
-            <div className='' style={styles.petImg}>
-              <img className='img-fluid rounded-3' width="100%" src={lostPet.image} />
+            <div className='flex-grow-1' style={styles.petImg}>
+              <img className='object-fit-contain rounded-3' src={lostPet.image} style={{ width: '100%', height: attrRef?.current?.offsetHeight }} />
             </div>
-            <div className='d-flex flex-column justify-content-between bg-wisteria pt-3 rounded-3 p-3' style={styles.petImg}>
+            <div className='flex-shrink-1 d-flex flex-column justify-content-between bg-wisteria pt-3 rounded-3 p-3' ref={attrRef} style={{ height: 'fit-content' }}>
               <div className='d-flex align-items-center mb-2'>
 
                 <h3 className='m-0 p-0 ms-2'>{lostPet.name}</h3>
@@ -81,8 +82,6 @@ function LostPetDetails() {
                   <li><b>Raza:</b> {lostPet.race}</li>
                   <li><b>Tamaño:</b> {lostPet.size}</li>
                   <li><b>Sexo:</b> {lostPet.sex}</li>
-                </ul>
-                <ul className='d-flex flex-column justify-content-evenly'>
                   <li><b>Provincia:</b> {lostPet.province}</li>
                   <li><b>Municipio:</b> {lostPet.municipality}</li>
                   <li><b>Contacto:</b> {lostPet.phone}</li>

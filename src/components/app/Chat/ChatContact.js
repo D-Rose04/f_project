@@ -27,9 +27,12 @@ function ChatContact({ chat }) {
     return (
         <Link className='text-decoration-none' to={open ? "/chat" : ("/chat/" + id)}>
             <div className={'bg-indigo d-flex justify-content-between align-items-center p-1 mb-1' + contactClass} style={contactStyle} onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}>
-                <img className={'img-fluid rounded-circle object-fit-cover'} width={35} height={35} style={styles.contactImg} src={picture} />
-                <span className={'flex-grow-1 ms-2 text-decoration-none'}>{name} {lastName}</span>
-                <span className={''} style={styles.contactDate}>{formatDate(sentAt)}</span>
+                <img className={'img-fluid rounded-circle object-fit-cover flex-shrink-0'} width={40} height={40} style={styles.contactImg} src={picture} />
+                <div className='flex-grow-1 ms-2 d-flex flex-column' style={{ overflow: 'hidden', whiteSpace: 'nowrap' }}>
+                    <span className={'text-decoration-none fw-bold'} style={{ fontSize: '16px' }}>{name} {lastName}</span>
+                    <span className={'text-decoration-none text-nowrap'} style={{ fontSize: '14px', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{lastMessage}</span>
+                </div>
+                <span className={'flex-shrink-0'} style={styles.contactDate}>{formatDate(sentAt)}</span>
                 {!seen && uidSent != currUser.uid ? <AiFillMessage className='ms-1' /> : null}
             </div>
         </Link>

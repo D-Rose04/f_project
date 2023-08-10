@@ -118,7 +118,7 @@ function Profile () {
           <div className="profile-layout d-flex gap-5 bg-wisteria py-2 px-5 rounded-2">
             <div className="d-flex flex-column align-items-center p-3">
               <img className="rounded-circle user-image object-fit-cover" style={{ width: '150px', height: '150px' }} src={user[0].imgUrl} referrerPolicy='no-referrer' alt="" />
-              <span className="fw-bold fs-4 my-4">{user[0]?.name} {user[0]?.lastname}</span>
+              <span className="fw-bold fs-4 my-4">{user[0]?.name} {user[0]?.lastname??user[0]?.lastName}</span>
               <p className="fs-5">{user[0].email}</p>
               <p className="fs-5">{user[0].phone}</p>
             </div>

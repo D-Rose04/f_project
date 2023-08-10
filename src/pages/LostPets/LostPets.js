@@ -8,13 +8,14 @@ import UseAnimations from 'react-useanimations'
 import loading from 'react-useanimations/lib/loading'
 import { IoIosMore } from 'react-icons/io'
 import { UseLoginContext } from '../../firebase/hooks/UseLogin'
+import LostPetsSidebar from '../../components/app/LostPets/LostPetsSidebar'
 
 function LostPets() {
   const [lostPets, setLostPets] = useState([])
   const [loadingPets, setLoadingPets] = useState(true)
 
   const navigate = useNavigate()
-  const [setTitle, setSidebar, setSidebarCols] = useOutletContext()
+  const [setTitle, setSidebar, setSidebarCols, layoutRowRef] = useOutletContext()
   const { currUser } = UseLoginContext()
 
   // const handleShow = () => navigate('add-pet')
@@ -22,12 +23,12 @@ function LostPets() {
   useEffect(() => {
     setTitle("Mascotas perdidas")
     setSidebarCols(2)
-    setSidebar(<></>)
 
     async function loadPets() {
       const petsData = await getLostPets(currUser.uid)
       setLostPets(petsData)
       setLoadingPets(false)
+      setSidebar(<LostPetsSidebar height={layoutRowRef.current.offsetHeight * 0.80} petList={petsData} onFilter={setLostPets} />)
     }
 
     loadPets()

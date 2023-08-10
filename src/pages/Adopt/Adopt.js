@@ -11,19 +11,19 @@ import { IconContext } from 'react-icons'
 import { IoIosMore } from 'react-icons/io'
 import { Dropdown } from 'react-bootstrap'
 import { UseLoadingContext } from '../../firebase/hooks/UseLoading'
+import AdoptSidebar from '../../components/app/Adopt/AdoptSidebar'
 
 function Adopt() {
   const [pets, setPets] = useState([])
   const [loadingPets, setLoadingPets] = useState(true)
   const [favPetIds, setFavPetIds] = useState([])
 
-  const [setTitle, setSidebar, setSidebarCols] = useOutletContext()
+  const [setTitle, setSidebar, setSidebarCols, layoutRowRef] = useOutletContext()
   const { currUser } = UseLoginContext()
   const navigate = useNavigate()
 
   useEffect(() => {
     setTitle("Adoptar")
-    setSidebar(<h5 className='text-dark'>Adopt sidebar</h5>)
     setSidebarCols(2)
 
     const loadPets = async () => {
@@ -32,6 +32,7 @@ function Adopt() {
       setFavPetIds(favIds)
       setPets(petsData)
       setLoadingPets(false)
+      setSidebar(<AdoptSidebar petList={petsData} height={layoutRowRef.current.offsetHeight * 0.80} onFilter={setPets} />)
     }
 
     loadPets()

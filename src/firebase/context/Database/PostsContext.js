@@ -1,7 +1,9 @@
-import { addDoc, collection, serverTimestamp, getDocs, doc, updateDoc, increment, arrayUnion } from "@firebase/firestore"
+import React, { useState } from 'react'
+import { addDoc, collection, serverTimestamp, getDocs, doc, updateDoc, increment, arrayUnion, Timestamp, getDoc, orderBy, query } from "@firebase/firestore"
 import { getUserByUID } from "./UserContext"
 import { db } from "../../config/config-firebase"
 import { uploadPostPicture} from "../StorageContext";
+
 
 export const POSTS_COLLECTION = 'posts'; //cuando tengas que poner el nombre de la coleccion, usa esta constante
 
@@ -14,15 +16,6 @@ export async function addPost(uid, postBody, image) {
         return //si el usuario no existe, para la ejecucion, puedes poner lo que quieras aqui
     }
 
-
-    // subir img a firebase
-    // let imgUrl = "";
-    // if (postImage) {
-    //   const imageRef = ref(storage);
-    //   await uploadString(imageRef, postImage, "data_url");
-    //   imgUrl = await getDownloadURL(imageRef);
-    // }
-
     const postImage = await uploadPostPicture(uid, image, postBody)
     const data = {
         user: {
@@ -31,7 +24,7 @@ export async function addPost(uid, postBody, image) {
             name: `${user.name} ${user.lastName !== undefined? user.lastName : user.lastname}`,
             desc: null
         },
-        time: serverTimestamp(), //metodo de firebase para obtener la fecha actual del servidor
+        time: serverTimestamp(), 
         postBody: postBody,
         postImage: postImage,
         likes: 0,
@@ -47,22 +40,34 @@ export async function addPost(uid, postBody, image) {
     
   } catch (error) {
     console.error("Error al agregar la publicación:", error);
-    // Maneja el error de forma adecuada en tu aplicación
-  }
+    }
 }
 
 export async function getPosts() {
   const postsCollectionRef = collection(db, POSTS_COLLECTION);
-  const query = await getDocs(postsCollectionRef);
+  const postsQuery = query(postsCollectionRef, orderBy('time','desc'));
+  const postsSnap=await getDocs(postsQuery)
 
   const posts = [];
-  query.forEach((doc) => {
+  postsSnap.forEach((doc) => {
     const post = doc.data();
     post.id = doc.id;
     posts.push(post);
   });
 
   return posts;
+}
+
+export async function getComments(postId) {
+  const postRef = doc(db, POSTS_COLLECTION, postId);
+  const postSnap = await getDoc(postRef);
+
+  if(!postSnap.exists()){
+    return []
+  }
+  
+  const postData=postSnap.data()
+  return postData.comments;
 }
 
 export async function likePost(postId, uid) {
@@ -82,3 +87,26 @@ export async function dislikePost(postId, uid) {
     dislikesBy: arrayUnion(uid), // Agregar el uid del usuario actual a la lista de dislikesBy
   });
 }
+
+export async function addCommentToPost(postId, commentData) {
+  try {
+    const postRef = doc(db, POSTS_COLLECTION, postId);
+
+    const timestamp = Timestamp.now();
+    console.log(commentData)
+    await updateDoc(postRef, {
+      comments: arrayUnion({
+        ...commentData,
+        time: timestamp
+      }),
+    });
+
+    console.log('Comentario agregado correctamente');
+  } catch (error) {
+    console.error('Error al agregar el comentario:', error);
+  }
+}
+
+
+
+

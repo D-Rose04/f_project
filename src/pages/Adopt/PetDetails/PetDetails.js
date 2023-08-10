@@ -160,9 +160,9 @@ function PetDetails() {
                                 <ul className='d-flex flex-column justify-content-evenly'>
                                     <li><b>Sexo:</b> {pet.sex}</li>
                                     <li><b>Tamaño:</b> {pet.size}</li>
-                                    <li className='text-wrap'><b>Provincia:</b> {pet.province}</li>
                                     <li><b>Raza:</b> {pet.race}</li>
                                     <li><b>Edad:</b> {pet.time}</li>
+                                    <li className='text-wrap'><b>Provincia:</b> {pet.province}</li>
                                     <li className='text-wrap'><b>Municipio:</b> {pet.municipality}</li>
                                 </ul>
                             </div>
