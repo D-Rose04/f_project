@@ -38,7 +38,6 @@ function ProfilePicture({ pictureImg, profileUrl }) {
                 <Dropdown.Toggle variant="success" id="dropdown-basic" as={ProfileImage} />
                 <Dropdown.Menu>
                     <Dropdown.Item className='text-dark' onClick={() => navigate(profileUrl)}>Perfil</Dropdown.Item>
-                    <Dropdown.Item className='text-dark'>Configuracion</Dropdown.Item>
                     <Dropdown.Item className='text-dark' onClick={handleLogOut}>Cerrar sesion</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>

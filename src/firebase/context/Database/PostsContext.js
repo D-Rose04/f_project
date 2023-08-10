@@ -9,14 +9,15 @@ export const POSTS_COLLECTION = 'posts'; //cuando tengas que poner el nombre de 
 
 //este es solo un ejemplo
 export async function addPost(uid, postBody, image) {
-    try{
+  console.log('normal')
+  try{
     const user = await getUserByUID(uid) //metodo en UserContext, no probado aun
 
     if (user == null) {
         return //si el usuario no existe, para la ejecucion, puedes poner lo que quieras aqui
     }
 
-    const postImage = await uploadPostPicture(uid, image, postBody)
+    const postImage = await uploadPostPicture(uid, image)
     const data = {
         user: {
             uid: uid,
@@ -41,6 +42,75 @@ export async function addPost(uid, postBody, image) {
   } catch (error) {
     console.error("Error al agregar la publicación:", error);
     }
+}
+
+export async function addPostWithoutImage(uid, postBody) {
+  console.log('no image')
+    try{
+    const user = await getUserByUID(uid) //metodo en UserContext, no probado aun
+
+    if (user == null) {
+        return //si el usuario no existe, para la ejecucion, puedes poner lo que quieras aqui
+    }
+
+    const data = {
+        user: {
+            uid: uid,
+            image: user.imgUrl !== undefined? user.imgUrl : user.picture,
+            name: `${user.name} ${user.lastName !== undefined? user.lastName : user.lastname}`,
+            desc: null
+        },
+        time: serverTimestamp(), 
+        postBody: postBody,
+        likes: 0,
+        dislikes: 0,
+        comments: []
+    }
+
+    const postCollectionRef = collection(db, POSTS_COLLECTION) //referencia a la coleccion de posts
+
+    const newPost = await addDoc(postCollectionRef, data) //resultado de crear el nuevo post, con toda la data y el id
+    console.log("Publicación agregada correctamente");
+    return newPost
+    
+  } catch (error) {
+    console.error("Error al agregar la publicación:", error);
+    }
+}
+
+export async function addPostWithoutText(uid, image) {
+  console.log('no text')
+  try{
+  const user = await getUserByUID(uid) //metodo en UserContext, no probado aun
+
+  if (user == null) {
+      return //si el usuario no existe, para la ejecucion, puedes poner lo que quieras aqui
+  }
+
+  const postImage = await uploadPostPicture(uid, image)
+  const data = {
+      user: {
+          uid: uid,
+          image: user.imgUrl !== undefined? user.imgUrl : user.picture,
+          name: `${user.name} ${user.lastName !== undefined? user.lastName : user.lastname}`,
+          desc: null
+      },
+      time: serverTimestamp(), 
+      postImage: postImage,
+      likes: 0,
+      dislikes: 0,
+      comments: []
+  }
+
+  const postCollectionRef = collection(db, POSTS_COLLECTION) //referencia a la coleccion de posts
+
+  const newPost = await addDoc(postCollectionRef, data) //resultado de crear el nuevo post, con toda la data y el id
+  console.log("Publicación agregada correctamente");
+  return newPost
+  
+} catch (error) {
+  console.error("Error al agregar la publicación:", error);
+  }
 }
 
 export async function getPosts() {

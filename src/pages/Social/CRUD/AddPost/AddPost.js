@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap';
 import ImagePicker from '../../../../components/layout/ImagePicker/ImagePicker';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import styles from './AddPost.styles'
 import { loginContext } from '../../../../firebase/context/LoginContext'
-import { addPost } from '../../../../firebase/context/Database/PostsContext'
+import { addPost, addPostWithoutImage, addPostWithoutText } from '../../../../firebase/context/Database/PostsContext'
 // import { getURL } from '../../../firebase/context/StorageContext'
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,6 +14,7 @@ import loading from 'react-useanimations/lib/loading';
 
 function PostDetails() {
     const navigate = useNavigate();
+    const [onPostLoaded] = useOutletContext()
     const toAdd = () => navigate('/social');
 
     const authContext = useContext(loginContext)
@@ -25,16 +26,29 @@ function PostDetails() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        if (!postBody && !postImage) {
+            toast.error('Debe ingresar datos para subir', { style: { color: 'black' } })
+            return
+        }
+
         const uid = authContext.currUser.uid;
 
         try {
             setSendingPost(true)
-            await addPost(uid, postBody, postImage);
+
+            if(!postBody){
+                await addPostWithoutText(uid, postImage)
+            }else if(!postImage){
+                await addPostWithoutImage(uid, postBody)
+            }else{
+                await addPost(uid, postBody, postImage);
+            }
 
             setPostBody("");
             setPostImage("");
 
             toast.success("¡Agregaste una publicación! :)");
+            onPostLoaded()
 
         } catch (error) {
             console.error("Error al agregar la publicación:", error);

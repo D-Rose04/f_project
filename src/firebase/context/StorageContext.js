@@ -66,9 +66,9 @@ export async function getURL(bucket) {
 //     return bucket
 // }
 
-export async function uploadPostPicture(uid, image, postBody) {
+export async function uploadPostPicture(uid, image) {
     const fileName = `${uid}_${Date.now()}.jpg`; 
-    const storageRef = ref(storage, `${BUCKET_URL}/${POST_FOLDER}/${postBody}/${fileName}`);
+    const storageRef = ref(storage, `${BUCKET_URL}/${POST_FOLDER}/${uid}/${fileName}`);
     await uploadBytes(storageRef, image);
   
     // Obten la URL de descarga de la imagen

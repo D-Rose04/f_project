@@ -52,7 +52,10 @@ function AdoptPet() {
     }
 
     async function handleSubmit(e) {
-        console.log(adoptData)
+        if(!user){
+            return
+        }
+        
         if (e) {
             e.preventDefault()
         }

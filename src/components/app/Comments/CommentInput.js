@@ -73,7 +73,7 @@ function CommentInput({ user, postId, onComment }) {
                 src={image} alt="" />
             <textarea className="form-control comment-input" rows="1" type="text" name="comment" ref={inputRef} onInput={autoGrow}
                 id="txtComment" onChange={handleInputChange} value={commentContent} placeholder="Ingresa un comentario" style={{maxHeight: '200px'}}></textarea>
-            <span className="align-self-start" onClick={handleSubmit} style={{ cursor: 'pointer' }}>
+            <span className="align-self-start mt-1" onClick={handleSubmit} style={{ cursor: 'pointer' }}>
                 <img className="img-fluid" width="35"
                     src={require("./../../../img/icons/send.png")} alt="" />
             </span>

@@ -36,6 +36,10 @@ function ChatInput({ layoutContentRef }) {
         setInputWidth(layoutContentRef.current.offsetWidth)
     }, [inputWidth, layoutContentRef.current?.offsetWidth])
 
+    useEffect(()=>{
+        inputRef.current.focus()
+    },[])
+
     const handleKey = (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
