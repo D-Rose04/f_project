@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { addDoc, collection, serverTimestamp, getDocs, doc, updateDoc, increment, arrayUnion, Timestamp } from "@firebase/firestore"
+import { addDoc, collection, serverTimestamp, getDocs, doc, updateDoc, increment, arrayUnion, Timestamp, getDoc, orderBy, query } from "@firebase/firestore"
 import { getUserByUID } from "./UserContext"
 import { db } from "../../config/config-firebase"
 import { uploadPostPicture} from "../StorageContext";
@@ -45,16 +45,29 @@ export async function addPost(uid, postBody, image) {
 
 export async function getPosts() {
   const postsCollectionRef = collection(db, POSTS_COLLECTION);
-  const query = await getDocs(postsCollectionRef);
+  const postsQuery = query(postsCollectionRef, orderBy('time','desc'));
+  const postsSnap=await getDocs(postsQuery)
 
   const posts = [];
-  query.forEach((doc) => {
+  postsSnap.forEach((doc) => {
     const post = doc.data();
     post.id = doc.id;
     posts.push(post);
   });
 
   return posts;
+}
+
+export async function getComments(postId) {
+  const postRef = doc(db, POSTS_COLLECTION, postId);
+  const postSnap = await getDoc(postRef);
+
+  if(!postSnap.exists()){
+    return []
+  }
+  
+  const postData=postSnap.data()
+  return postData.comments;
 }
 
 export async function likePost(postId, uid) {

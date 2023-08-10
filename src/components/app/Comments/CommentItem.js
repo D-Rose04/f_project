@@ -4,8 +4,9 @@ import CommentResponse from './CommentResponse'
 
 function CommentItem({ comment }) {
     const { id, user, time, body, replies } = comment;
+    console.log(comment)
     return (
-        <div className="comment-element mt-4">
+        <div className="comment-element mt-2">
             <Comment user={user} time={time} body={body} />
             {/* {replies.map(r => <CommentResponse response={r} />)} */}
 
