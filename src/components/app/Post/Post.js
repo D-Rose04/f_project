@@ -11,42 +11,52 @@ import "react-toastify/dist/ReactToastify.css";
 import { serverTimestamp } from "firebase/firestore";
 
 function Post({ post }) {
-    const { id, postBody, postImage, user, time, comments } = post;
+    const LIKE = require("./../../../img/icons/like.png")
+    const LIKE_OUTLINE = require("./../../../img/icons/like-outline.png")
+    const DISLIKE = require("./../../../img/icons/dislike.png")
+    const DISLIKE_OUTLINE = require("./../../../img/icons/dislike-outline.png")
+    const { id, postBody, postImage, user, time, comments, likesBy, dislikesBy } = post;
     const { image } = user
+    const authContext = useContext(loginContext)
+
+    const uid = authContext.currUser.uid;
 
     const [userImg, setUserImg] = useState('')
     const [img, setImg] = useState('')
     const [postComments, setPostComments] = useState([])
 
-    const authContext = useContext(loginContext)
 
-    const [likesCount, setLikesCount] = useState(post.likes); // Estado para el conteo de likes
-    const [dislikesCount, setDislikesCount] = useState(post.dislikes); // Estado para el conteo de dislikes
+    const [likesCount, setLikesCount] = useState(likesBy?.length); // Estado para el conteo de likes
+    const [likeIcon, setLikeIcon] = useState(likesBy?.includes(uid) ? LIKE : LIKE_OUTLINE);
+    const [dislikesCount, setDislikesCount] = useState(dislikesBy?.length); // Estado para el conteo de dislikes
+    const [dislikeIcon, setDislikeIcon] = useState(dislikesBy?.includes(uid) ? DISLIKE : DISLIKE_OUTLINE);
 
     // const [comments, setComments] = useState( post.comments );
 
-    const uid = authContext.currUser.uid;
+
 
     const handleLike = async () => {
-        await likePost(post.id, uid);
+        const likeRes = await likePost(post.id, uid);
 
-        setLikesCount(likesCount + 1);
+        setLikeIcon(likeRes > 0 ? LIKE : LIKE_OUTLINE)
+        setLikesCount(likesCount + likeRes);
 
         toast.success("¡Te gusta esta publicación! :)");
     };
 
     const handleDislike = async () => {
-        await dislikePost(post.id, uid);
+        const dislikeRes = await dislikePost(post.id, uid);
 
-        setDislikesCount(dislikesCount + 1);
+        setDislikeIcon(dislikeRes > 0 ? DISLIKE : DISLIKE_OUTLINE)
+        setDislikesCount(dislikesCount + dislikeRes);
 
         toast.success("¡No te gusta esta publicación! :(");
 
     };
 
-    async function loadComments(){
+    async function loadComments() {
         try {
-            const commentsData=await getComments(id)
+            const commentsData = await getComments(id)
             setPostComments(commentsData)
         } catch (error) {
             console.log("Error al cargar los comentarios: ", error)
@@ -109,18 +119,18 @@ function Post({ post }) {
                     {postBody}
                 </p>
                 {postImage?.trim() ? <div className="post-img mt-1">
-                    <img className="img-fluid rounded object-fit-contain" src={img} alt="" style={{width:'100%', maxHeight:'768px'}} />
+                    <img className="img-fluid rounded object-fit-contain" src={img} alt="" style={{ width: '100%', maxHeight: '768px' }} />
                 </div> : null}
                 <div className="w-50 d-flex justify-content-around mt-3">
                     <div className="d-flex align-items-center text-decoration-none" style={{ cursor: 'pointer' }} onClick={handleLike}>
                         <img className="img-fluid" width="28"
-                            src={require("./../../../img/icons/like.png")} alt="" />
-                        <span className=" ms-2">{post.likes}</span>
+                            src={likeIcon} alt="" />
+                        <span className=" ms-2">{likesCount ?? 0}</span>
                     </div>
                     <div className="d-flex align-items-center text-decoration-none" style={{ cursor: 'pointer' }} onClick={handleDislike}>
                         <img className="img-fluid" width="28"
-                            src={require("./../../../img/icons/dislike.png")} alt="" />
-                        <span className=" ms-2">{post.dislikes}</span>
+                            src={dislikeIcon} alt="" />
+                        <span className=" ms-2">{dislikesCount ?? 0}</span>
                     </div>
                     <div className="d-flex align-items-center text-decoration-none" style={{ cursor: 'pointer' }}>
                         <img className="img-fluid" width="28"
