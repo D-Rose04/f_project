@@ -2,6 +2,8 @@ import { addDoc, and, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDo
 import { db } from "../../config/config-firebase"
 import { uploadPetPicture } from "../StorageContext"
 import { checkChatByUsers, createChat, sendMessage, sendMessageWithImage } from "./ChatContext"
+import emailjs from '@emailjs/browser'
+import { UseLoginContext } from "../../hooks/UseLogin"
 
 const PETS_COLLECTION = 'pets'
 const LOST_PETS_COLLECTION = 'lostPets'
@@ -197,6 +199,29 @@ export async function getFavoritePets(uid) {
     return favPets
 }
 
+export async function sendRequestEmail(petId){
+    try {
+        const petSnap = await getDoc(doc(db, PETS_COLLECTION, petId))
+        const petData = petSnap.data()
+
+        const userSnap = await getDoc(doc(db, USERS_COLLECTION, petData.uid))
+        const userData = userSnap.data()
+
+        const templateParams = {
+            toEmail: userData.email,
+            petName: petData.name,
+            petImage: petData.image,
+            pageLink: 'https://happyfeets-5eec5.web.app/my-pets/' + petId,
+        }
+        console.log(templateParams)
+
+        emailjs.send('happy-feets-email', 'template_zvd3drd', templateParams, 'pdeNSN8TvAzJD9YlQ')
+    } catch (error) {
+        console.log(error)
+    }
+    
+}
+
 export async function addAdoptRequest(uid, petId, fullName, phone, userAge, direction, prevExperience, liveWith, placeType, placeDesc) {
     const data = {
         uid,
@@ -214,8 +239,9 @@ export async function addAdoptRequest(uid, petId, fullName, phone, userAge, dire
 
     const reqsRef = collection(db, ADOPT_REQUESTS_COLLECTION)
     let response
-    addDoc(reqsRef, data).then(res => {
+    addDoc(reqsRef, data).then(async res => {
         response = res
+        sendRequestEmail(petId)
     }).catch(err => {
         response = "error"
     })
