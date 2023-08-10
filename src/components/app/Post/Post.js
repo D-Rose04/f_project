@@ -108,9 +108,8 @@ function Post({ post }) {
                 <p className=" m-0">
                     {postBody}
                 </p>
-                {postImage.trim() ? <div className="post-img mt-1">
-                    <img className="img-fluid rounded"
-                        src={img} alt="" />
+                {postImage?.trim() ? <div className="post-img mt-1">
+                    <img className="img-fluid rounded object-fit-contain" src={img} alt="" style={{width:'100%', maxHeight:'768px'}} />
                 </div> : null}
                 <div className="w-50 d-flex justify-content-around mt-3">
                     <div className="d-flex align-items-center text-decoration-none" style={{ cursor: 'pointer' }} onClick={handleLike}>
